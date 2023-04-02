@@ -1,6 +1,6 @@
 {
-    "name": "turismo",
-    "short_name": "turismo",
+    "name": "traveller",
+    "short_name": "traveller",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -1,14 +1,20 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:traveller/Recommendation/recomendation_model.dart';
+import 'package:traveller/firebase_options.dart';
 import 'package:traveller/traveller-main-page.dart';
 
 import 'Recommendation/list.dart';
 import 'Weather/utils/converters.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
     AppStateContainer(
       child: BlocProvider(

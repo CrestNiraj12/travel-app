@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "763295224404",
+    "project_id": "traveller-d3516",
+    "storage_bucket": "traveller-d3516.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763295224404:android:5f95259fb7a120eaee53c1",
+        "android_client_info": {
+          "package_name": "com.shristi.travel_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763295224404-bpea8e7c86rsrl5lh7qk4ekc65fdqf7q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcgKRsMrpanMHR-spKjC-uXR6TnonGiQA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763295224404-bpea8e7c86rsrl5lh7qk4ekc65fdqf7q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763295224404:android:baf93205400c0dc2ee53c1",
+        "android_client_info": {
+          "package_name": "com.shristi.traveller"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763295224404-bpea8e7c86rsrl5lh7qk4ekc65fdqf7q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcgKRsMrpanMHR-spKjC-uXR6TnonGiQA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763295224404-bpea8e7c86rsrl5lh7qk4ekc65fdqf7q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

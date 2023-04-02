@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.shristi.travel_app">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.shristi.traveller">
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
    <application
         android:label="Traveller App"

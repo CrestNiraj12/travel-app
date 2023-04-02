@@ -40,6 +40,8 @@ dependencies:
     charts_flutter: ^0.12.0
     flutter_swiper: ^1.1.6
     weather_icons: ^3.0.0
+    change_app_package_name: ^0.1.3
+    firebase_core: ^2.9.0
 
 dev_dependencies:
     flutter_test:

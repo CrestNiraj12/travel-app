@@ -1,4 +1,4 @@
-package com.shristi.travel_app
+package com.shristi.traveller
 
 import io.flutter.embedding.android.FlutterActivity
 
