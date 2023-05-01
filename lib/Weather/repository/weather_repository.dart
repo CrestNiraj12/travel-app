@@ -1,14 +1,15 @@
-import 'package:meta/meta.dart';
-import 'package:traveller/Weather/api/weather_api_client.dart';
-import 'package:traveller/Weather/model/weather.dart';
+import 'package:traveller/weather/api/weather_api_client.dart';
+import 'package:traveller/weather/model/weather.dart';
 
 class WeatherRepository {
   final WeatherApiClient weatherApiClient;
-  WeatherRepository({@required this.weatherApiClient})
-      : assert(weatherApiClient != null);
+  WeatherRepository({required this.weatherApiClient});
 
-  Future<Weather> getWeather(String cityName,
-      {double latitude, double longitude}) async {
+  Future<Weather> getWeather(
+    String? cityName, {
+    double? latitude,
+    double? longitude,
+  }) async {
     if (cityName == null) {
       cityName = await weatherApiClient.getCityNameFromLocation(
           latitude: latitude, longitude: longitude);

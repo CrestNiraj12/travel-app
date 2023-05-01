@@ -1,21 +1,21 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:meta/meta.dart';
-import 'package:traveller/Weather/api/http_exception.dart';
-import 'package:traveller/Weather/model/weather.dart';
+import 'package:traveller/weather/api/http_exception.dart';
+import 'package:traveller/weather/model/weather.dart';
 
 class WeatherApiClient {
   static const baseUrl = 'http://api.openweathermap.org';
   final apiKey;
   final http.Client httpClient;
 
-  WeatherApiClient({@required this.httpClient, this.apiKey})
-      : assert(httpClient != null),
-        assert(apiKey != null);
+  WeatherApiClient({required this.httpClient, this.apiKey})
+      : assert(apiKey != null);
 
-  Future<String> getCityNameFromLocation(
-      {double latitude, double longitude}) async {
+  Future<String> getCityNameFromLocation({
+    double? latitude,
+    double? longitude,
+  }) async {
     final url = Uri.parse(
         '$baseUrl/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey');
     final res = await this.httpClient.get(url);

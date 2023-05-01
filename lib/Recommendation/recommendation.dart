@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'list.dart';
+import 'package:traveller/recommendation/list.dart';
 
 class Recommendation extends StatefulWidget {
   @override

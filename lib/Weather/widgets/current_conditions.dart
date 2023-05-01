@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:traveller/Weather/model/weather.dart';
-import 'package:traveller/Weather/widgets/value_tile.dart';
 import 'package:traveller/main.dart';
+import 'package:traveller/weather/model/weather.dart';
+import 'package:traveller/weather/widgets/value_tile.dart';
 
 class CurrentConditions extends StatelessWidget {
   final Weather weather;
-  const CurrentConditions({Key key, this.weather}) : super(key: key);
+  const CurrentConditions({Key? key, required this.weather}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +21,13 @@ class CurrentConditions extends StatelessWidget {
           height: 20,
         ),
         Text(
-          '${this.weather.temperature.as(AppStateContainer.of(context).temperatureUnit).round()}°',
+          '${this.weather.temperature?.as(AppStateContainer.of(context).temperatureUnit).round()}°',
           style: TextStyle(
               fontSize: 100, fontWeight: FontWeight.w100, color: Colors.black),
         ),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
           ValueTile("max",
-              '${this.weather.maxTemperature.as(AppStateContainer.of(context).temperatureUnit).round()}°'),
+              '${this.weather.maxTemperature?.as(AppStateContainer.of(context).temperatureUnit).round()}°'),
           Padding(
             padding: const EdgeInsets.only(left: 15, right: 15),
             child: Center(
@@ -38,7 +38,7 @@ class CurrentConditions extends StatelessWidget {
             )),
           ),
           ValueTile("min",
-              '${this.weather.minTemperature.as(AppStateContainer.of(context).temperatureUnit).round()}°'),
+              '${this.weather.minTemperature?.as(AppStateContainer.of(context).temperatureUnit).round()}°'),
         ]),
       ],
     );

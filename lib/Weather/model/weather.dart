@@ -1,42 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:traveller/weather/utils/converters.dart';
 import 'package:weather_icons/weather_icons.dart';
-import 'package:traveller/Weather/utils/converters.dart';
 
 class Weather {
-  int id;
-  int time;
-  int sunrise;
-  int sunset;
-  int humidity;
+  int? id;
+  int? time;
+  int? sunrise;
+  int? sunset;
+  int? humidity;
 
-  String description;
-  String iconCode;
-  String main;
-  String cityName;
+  String? description;
+  String? iconCode;
+  String? main;
+  String? cityName;
 
-  double windSpeed;
+  double? windSpeed;
 
-  Temperature temperature;
-  Temperature maxTemperature;
-  Temperature minTemperature;
+  Temperature? temperature;
+  Temperature? maxTemperature;
+  Temperature? minTemperature;
 
-  List<Weather> forecast;
+  List<Weather>? forecast;
 
-  Weather(
-      {this.id,
-      this.time,
-      this.sunrise,
-      this.sunset,
-      this.humidity,
-      this.description,
-      this.iconCode,
-      this.main,
-      this.cityName,
-      this.windSpeed,
-      this.temperature,
-      this.maxTemperature,
-      this.minTemperature,
-      this.forecast});
+  Weather({
+    this.id,
+    this.time,
+    this.sunrise,
+    this.sunset,
+    this.humidity,
+    this.description,
+    this.iconCode,
+    this.main,
+    this.cityName,
+    this.windSpeed,
+    this.temperature,
+    this.maxTemperature,
+    this.minTemperature,
+    this.forecast,
+  });
 
   static Weather fromJson(Map<String, dynamic> json) {
     final weather = json['weather'][0];

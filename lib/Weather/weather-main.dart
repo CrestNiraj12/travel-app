@@ -4,32 +4,37 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
-import 'package:traveller/Weather/repository/weather_repository.dart';
-
-import 'api/api_keys.dart';
-import 'api/weather_api_client.dart';
-import 'bloc/weather_bloc.dart';
-import 'bloc/weather_event.dart';
-import 'bloc/weather_state.dart';
-import 'widgets/weather_widget.dart';
+import 'package:traveller/weather/api/api_keys.dart';
+import 'package:traveller/weather/api/weather_api_client.dart';
+import 'package:traveller/weather/bloc/weather_bloc.dart';
+import 'package:traveller/weather/bloc/weather_event.dart';
+import 'package:traveller/weather/bloc/weather_state.dart';
+import 'package:traveller/weather/repository/weather_repository.dart';
+import 'package:traveller/weather/widgets/weather_widget.dart';
 
 class Weather extends StatefulWidget {
   final WeatherRepository weatherRepository = WeatherRepository(
-      weatherApiClient: WeatherApiClient(
-          httpClient: http.Client(), apiKey: ApiKey.OPEN_WEATHER_MAP));
+    weatherApiClient: WeatherApiClient(
+      httpClient: http.Client(),
+      apiKey: ApiKey.OPEN_WEATHER_MAP,
+    ),
+  );
   @override
   _WeatherState createState() => _WeatherState();
 }
 
 class _WeatherState extends State<Weather> with TickerProviderStateMixin {
-  WeatherBloc _weatherBloc;
-  TextEditingController _textController;
-  Position position;
+  late WeatherBloc _weatherBloc;
+  late TextEditingController _textController;
+  late Position position;
 
   @override
   void initState() {
     super.initState();
-    _weatherBloc = WeatherBloc(widget.weatherRepository);
+    _weatherBloc = WeatherBloc(
+      widget.weatherRepository,
+      initialState: WeatherLoading(),
+    );
     _textController = TextEditingController(text: 'Kathmandu');
 
     _fetchWeatherWithLocation().catchError((error) {
@@ -54,7 +59,7 @@ class _WeatherState extends State<Weather> with TickerProviderStateMixin {
           ),
           actions: <Widget>[
             BlocBuilder(
-              cubit: _weatherBloc,
+              bloc: _weatherBloc,
               builder: (_, WeatherState weatherState) {
                 return Container(
                   margin: EdgeInsets.only(right: 10),
@@ -85,7 +90,7 @@ class _WeatherState extends State<Weather> with TickerProviderStateMixin {
                     height: 30.0,
                   ),
                   BlocBuilder(
-                    cubit: _weatherBloc,
+                    bloc: _weatherBloc,
                     builder: (_, WeatherState weatherState) {
                       if (weatherState is WeatherLoading ||
                           weatherState is WeatherEmpty) {
@@ -95,18 +100,17 @@ class _WeatherState extends State<Weather> with TickerProviderStateMixin {
                           ),
                         );
                       } else if (weatherState is WeatherLoaded) {
-                        _textController.text = weatherState.weather.cityName;
+                        _textController.text =
+                            weatherState.weather.cityName ?? '';
                         return WeatherWidget(
                           weather: weatherState.weather,
                         );
                       } else if (weatherState is WeatherError) {
                         String errorText =
                             'There was an error fetching weather data';
-                        if (weatherState is WeatherError) {
-                          if (weatherState.errorCode == 404) {
-                            errorText =
-                                'We have trouble fetching weather for ${_textController.text}';
-                          }
+                        if (weatherState.errorCode == 404) {
+                          errorText =
+                              'We have trouble fetching weather for ${_textController.text}';
                         }
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -227,13 +231,16 @@ class _WeatherState extends State<Weather> with TickerProviderStateMixin {
         print('location permission denied');
         _showLocationDeniedDialog();
         throw Error();
-        break;
     }
 
     position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.low);
-    _weatherBloc.add(FetchWeather(
-        longitude: position.longitude, latitude: position.latitude));
+    _weatherBloc.add(
+      FetchWeather(
+        longitude: position.longitude,
+        latitude: position.latitude,
+      ),
+    );
   }
 
   void _showLocationDeniedDialog() {
@@ -262,7 +269,11 @@ class _WeatherState extends State<Weather> with TickerProviderStateMixin {
   }
 
   void _fetchDefaultWeather() {
-    _weatherBloc.add(FetchWeather(
-        longitude: position.longitude, latitude: position.latitude));
+    _weatherBloc.add(
+      FetchWeather(
+        longitude: position.longitude,
+        latitude: position.latitude,
+      ),
+    );
   }
 }

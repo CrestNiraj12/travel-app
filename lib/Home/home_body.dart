@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:traveller/Places/Places.dart';
-import 'package:traveller/Recommendation/recommendation.dart';
+import 'package:traveller/places/Places.dart';
+import 'package:traveller/recommendation/recommendation.dart';
 
 class HomeBody extends StatefulWidget {
   @override

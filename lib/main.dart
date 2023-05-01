@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:traveller/Recommendation/recomendation_model.dart';
 import 'package:traveller/firebase_options.dart';
+import 'package:traveller/recommendation/recomendation_model.dart';
 import 'package:traveller/traveller-main-page.dart';
 
-import 'Recommendation/list.dart';
-import 'Weather/utils/converters.dart';
+import 'recommendation/list.dart';
+import 'weather/utils/converters.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,14 +69,14 @@ class MainPageState extends State<MainPage> {
 class AppStateContainer extends StatefulWidget {
   final Widget child;
 
-  AppStateContainer({@required this.child});
+  AppStateContainer({required this.child});
 
   @override
   _AppStateContainerState createState() => _AppStateContainerState();
 
   static _AppStateContainerState of(BuildContext context) {
     return (context
-            .dependOnInheritedWidgetOfExactType<_InheritedStateContainer>())
+            .dependOnInheritedWidgetOfExactType<_InheritedStateContainer>())!
         .data;
   }
 }
@@ -116,9 +116,9 @@ class _InheritedStateContainer extends InheritedWidget {
   final _AppStateContainerState data;
 
   const _InheritedStateContainer({
-    Key key,
-    @required this.data,
-    @required Widget child,
+    Key? key,
+    required this.data,
+    required Widget child,
   }) : super(key: key, child: child);
 
   @override

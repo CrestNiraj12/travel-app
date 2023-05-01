@@ -1,11 +1,11 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
-import 'package:traveller/Weather/model/weather.dart';
 import 'package:traveller/main.dart';
+import 'package:traveller/weather/model/weather.dart';
 
 class TemperatureLineChart extends StatelessWidget {
-  final List<Weather> weathers;
-  final bool animate;
+  final List<Weather>? weathers;
+  final bool? animate;
 
   TemperatureLineChart(this.weathers, {this.animate});
 
@@ -19,10 +19,10 @@ class TemperatureLineChart extends StatelessWidget {
             id: 'Temperature',
             colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
             domainFn: (Weather weather, _) =>
-                DateTime.fromMillisecondsSinceEpoch(weather.time * 1000),
+                DateTime.fromMillisecondsSinceEpoch((weather.time ?? 0) * 1000),
             measureFn: (Weather weather, _) => weather.temperature
-                .as(AppStateContainer.of(context).temperatureUnit),
-            data: weathers,
+                ?.as(AppStateContainer.of(context).temperatureUnit),
+            data: weathers ?? [],
           )
         ],
         animate: animate,

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:traveller/Profile/profile.dart';
 
-import 'Home/home.dart';
-import 'Weather/weather-main.dart';
+import 'home/home.dart';
+import 'weather/weather-main.dart';
 
 class Traveller extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class TravellerState extends State<Traveller> {
     // Search(),
     Home(),
     Weather(),
-    // Profile(),
+    Profile(),
   ];
 
   Widget _getNavButton(String text, IconData icon, int index) {
@@ -72,7 +73,7 @@ class TravellerState extends State<Traveller> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        height: 70,
+        height: 80,
         color: Colors.blueAccent,
         shape: CircularNotchedRectangle(),
         notchMargin: 5,
@@ -87,7 +88,7 @@ class TravellerState extends State<Traveller> {
             children: <Widget>[
               _getNavButton('Search', Icons.search, 0),
               _getNavButton('Weather', Icons.wb_sunny, 1),
-              _getNavButton('Profile', Icons.person, 0),
+              _getNavButton('Profile', Icons.person, 2),
             ],
           ),
         ),

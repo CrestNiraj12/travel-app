@@ -5,7 +5,7 @@ import 'empty_widget.dart';
 class ValueTile extends StatelessWidget {
   final String label;
   final String value;
-  final IconData iconData;
+  final IconData? iconData;
 
   ValueTile(this.label, this.value, {this.iconData});
 

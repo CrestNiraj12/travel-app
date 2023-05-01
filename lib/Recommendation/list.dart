@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:traveller/Recommendation/recomendation_model.dart';
+import 'package:traveller/recommendation/recomendation_model.dart';
 
 class RecomDetail extends StatefulWidget {
   static const routeName = '/Recom-detail';
@@ -10,15 +10,15 @@ class RecomDetail extends StatefulWidget {
 }
 
 class _RecomDetailState extends State<RecomDetail> {
-  String firstHalf;
+  late String firstHalf;
 
-  String secondHalf;
+  late String secondHalf;
 
   bool flag = true;
 
   @override
   Widget build(BuildContext context) {
-    final countryId = ModalRoute.of(context).settings.arguments as String;
+    final countryId = ModalRoute.of(context)?.settings.arguments as String;
     final loadedProduct = Provider.of<Recomends>(context).findById(countryId);
     if (loadedProduct.description.length > 50) {
       firstHalf = loadedProduct.description.substring(0, 100);

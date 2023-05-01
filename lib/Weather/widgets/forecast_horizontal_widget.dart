@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:traveller/Weather/model/weather.dart';
-import 'package:traveller/Weather/widgets/value_tile.dart';
 import 'package:traveller/main.dart';
+import 'package:traveller/weather/model/weather.dart';
+import 'package:traveller/weather/widgets/value_tile.dart';
 
 class ForecastHorizontal extends StatelessWidget {
   const ForecastHorizontal({
-    Key key,
-    @required this.weathers,
+    Key? key,
+    required this.weathers,
   }) : super(key: key);
 
   final List<Weather> weathers;
@@ -32,8 +32,8 @@ class ForecastHorizontal extends StatelessWidget {
             child: Center(
                 child: ValueTile(
               DateFormat('E, ha').format(
-                  DateTime.fromMillisecondsSinceEpoch(item.time * 1000)),
-              '${item.temperature.as(AppStateContainer.of(context).temperatureUnit).round()}°',
+                  DateTime.fromMillisecondsSinceEpoch((item.time ?? 0) * 1000)),
+              '${item.temperature?.as(AppStateContainer.of(context).temperatureUnit).round()}°',
               iconData: item.getIconData(),
             )),
           );

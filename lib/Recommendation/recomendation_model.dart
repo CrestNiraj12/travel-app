@@ -8,12 +8,12 @@ class Recomend with ChangeNotifier {
   final String description;
   final String location;
   Recomend({
-    @required this.id,
-    @required this.place,
-    @required this.country,
-    @required this.imageUrl,
-    @required this.description,
-    @required this.location,
+    required this.id,
+    required this.place,
+    required this.country,
+    required this.imageUrl,
+    required this.description,
+    required this.location,
   });
 }
 
