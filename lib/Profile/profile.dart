@@ -6,10 +6,12 @@ import 'package:traveller/profile/profile_home.dart';
 class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final auth = FirebaseAuth.instance;
-
     return Scaffold(
-      body: auth.currentUser != null ? ProfileHome() : Authenticate(),
+      body: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) =>
+            (snapshot.data != null) ? ProfileHome() : Authenticate(),
+      ),
     );
   }
 }

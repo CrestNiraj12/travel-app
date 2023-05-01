@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:traveller/constants/constant.dart';
 import 'package:traveller/firebase_options.dart';
 import 'package:traveller/recommendation/recomendation_model.dart';
 import 'package:traveller/traveller-main-page.dart';
@@ -59,6 +60,7 @@ class MainPageState extends State<MainPage> {
             primarySwatch: Colors.blue,
           ),
           home: Traveller(),
+          scaffoldMessengerKey: globalScaffoldKey,
           routes: {
             RecomDetail.routeName: (context) => RecomDetail(),
           }),

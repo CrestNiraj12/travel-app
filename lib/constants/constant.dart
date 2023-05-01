@@ -6,3 +6,5 @@ InputDecoration textInputDecoration = InputDecoration(
   fillColor: Colors.grey[300],
   filled: true,
 );
+
+final globalScaffoldKey = GlobalKey<ScaffoldMessengerState>();

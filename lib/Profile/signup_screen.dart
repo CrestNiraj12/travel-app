@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:traveller/components/loader.dart';
 import 'package:traveller/constants/constant.dart';
 import 'package:traveller/utils/firebase_service.dart';
 
@@ -24,12 +25,19 @@ final emailValidator = MultiValidator([
       errorText: 'Invalid Email')
 ]);
 
+final nameValidator = MultiValidator([
+  RequiredValidator(errorText: 'Full name is required'),
+  MinLengthValidator(3, errorText: 'Name must be at least 3 characters long'),
+]);
+
 class _RegistrationState extends State<Registration> {
   final _formKey = GlobalKey<FormState>();
   bool _hidePassword = true;
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  bool _loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +101,20 @@ class _RegistrationState extends State<Registration> {
                             ),
                             validator: emailValidator,
                             keyboardType: TextInputType.emailAddress,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          TextFormField(
+                            controller: _nameController,
+                            decoration: textInputDecoration.copyWith(
+                              hintText: "Fullname",
+                              prefixIcon: Icon(
+                                Icons.person,
+                              ),
+                            ),
+                            validator: nameValidator,
+                            keyboardType: TextInputType.text,
                           ),
                           SizedBox(
                             height: 15,
@@ -180,17 +202,28 @@ class _RegistrationState extends State<Registration> {
                               ),
                               backgroundColor: Colors.black45,
                             ),
-                            child: Icon(
-                              Icons.arrow_forward,
-                              size: 40,
-                              color: Colors.white,
-                            ),
+                            child: _loading
+                                ? Loader()
+                                : Icon(
+                                    Icons.arrow_forward,
+                                    size: 40,
+                                    color: Colors.white,
+                                  ),
                             onPressed: () async {
+                              setState(() {
+                                _loading = true;
+                              });
                               if (_formKey.currentState?.validate() ?? false) {
                                 await createUserWithEmailAndPassword(
                                   email: _emailController.text,
                                   password: _passwordController.text,
+                                  name: _nameController.text,
                                 );
+                              }
+                              if (mounted) {
+                                setState(() {
+                                  _loading = false;
+                                });
                               }
                             },
                           ),

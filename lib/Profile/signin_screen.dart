@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:traveller/components/loader.dart';
 import 'package:traveller/constants/constant.dart';
 import 'package:traveller/utils/firebase_service.dart';
 
 final passwordValidator = MultiValidator([
   RequiredValidator(errorText: 'password is required'),
-  MinLengthValidator(8, errorText: 'password must be at least 8 digits long'),
-  PatternValidator(r'(?=.*?[#?!@$%^&*-])',
-      errorText: 'passwords must have at least one special character')
 ]);
 
 final emailValidator = MultiValidator([
@@ -29,6 +27,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _loading = false;
 
   bool _hidePassword = true;
 
@@ -141,17 +140,28 @@ class _SignInScreenState extends State<SignInScreen> {
                                 borderRadius: BorderRadius.circular(12.0),
                               ),
                             ),
-                            child: Icon(
-                              Icons.arrow_forward,
-                              size: 40,
-                              color: Colors.white,
-                            ),
+                            child: _loading
+                                ? Loader()
+                                : Icon(
+                                    Icons.arrow_forward,
+                                    size: 40,
+                                    color: Colors.white,
+                                  ),
                             onPressed: () async {
+                              setState(() {
+                                _loading = true;
+                              });
                               if (_formKey.currentState?.validate() ?? false) {
                                 await signInWithEmailAndPassword(
+                                  context: context,
                                   email: _emailController.text,
                                   password: _passwordController.text,
                                 );
+                              }
+                              if (mounted) {
+                                setState(() {
+                                  _loading = false;
+                                });
                               }
                             },
                           ),

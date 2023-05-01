@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:traveller/components/snackbar.dart';
+import 'package:traveller/constants/constant.dart';
 
 class ProfileHome extends StatefulWidget {
   @override
@@ -8,134 +11,93 @@ class ProfileHome extends StatefulWidget {
 class _ProfileHomeState extends State<ProfileHome> {
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    final imageURL = user?.photoURL ??
+        "https://ui-avatars.com/api/?name=${user?.displayName ?? user?.email}&size=120";
+
     return Scaffold(
-      body: ListView(
+      body: Column(
         children: <Widget>[
-          Stack(
-            children: <Widget>[
-              Container(
-                height: 260.0,
-                width: double.infinity,
-                color: Colors.lightBlue,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+          Container(
+            height: 260.0,
+            width: double.infinity,
+            color: Colors.lightBlue,
+            padding: EdgeInsets.only(top: 50),
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 20.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    SizedBox(height: 20.0),
-                    Row(
-                      children: <Widget>[
-                        SizedBox(width: 15.0),
-                        CircleAvatar(
-                          radius: 60.0,
-                          backgroundColor: Colors.red,
-                          child: Text("Malik Tariq"),
-                        ),
+                    SizedBox(width: 15.0),
+                    CircleAvatar(
+                      radius: 60.0,
+                      backgroundColor: Colors.red,
+                      backgroundImage:
+                          user != null ? NetworkImage(imageURL) : null,
+                      child:
+                          user == null ? Text(user?.displayName ?? '') : null,
+                    ),
+                    SizedBox(
+                      width: 30.0,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         SizedBox(
-                          width: 30.0,
+                          height: 30.0,
                         ),
                         Text(
-                          "Malik Tariq Azam",
+                          user?.displayName ?? '',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 25.0,
+                            fontSize: 26.0,
                           ),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 13.0,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        SizedBox(width: 35.0),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            backgroundColor: Colors.white,
-                          ),
-                          onPressed: () {},
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: Text(
-                              "Follow",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20.0),
-                            ),
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          user?.email ?? '',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                            color: Colors.grey[800],
                           ),
                         ),
                       ],
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        SizedBox(width: 17.0),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            backgroundColor: Colors.white,
-                          ),
-                          onPressed: () {},
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 20.0,
-                            width: 75.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            child: Text(
-                              "Likes 341",
-                              style: TextStyle(fontSize: 16.0),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 10.0),
-                        TextButton(
-                          onPressed: () {},
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            backgroundColor: Colors.white,
-                          ),
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 20.0,
-                            width: 104.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            child: Text(
-                              "Followers 341",
-                              style: TextStyle(fontSize: 16.0),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 10.0),
-                        TextButton(
-                          onPressed: () {},
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            backgroundColor: Colors.white,
-                          ),
-                          child: Container(
-                            height: 20.0,
-                            width: 50.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            child: Text(
-                              "Blogs",
-                              style: TextStyle(fontSize: 16.0),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    )
                   ],
                 ),
-              )
-            ],
+                SizedBox(
+                  height: 13.0,
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.white,
+                  ),
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut();
+                    globalScaffoldKey.currentState?.showSnackBar(
+                      showSnackBar(content: 'Successfully logged out'),
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Text(
+                      "Logout",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 20.0),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           )
         ],
       ),
