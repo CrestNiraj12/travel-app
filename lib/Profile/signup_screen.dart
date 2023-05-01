@@ -210,6 +210,7 @@ class _RegistrationState extends State<Registration> {
                                     color: Colors.white,
                                   ),
                             onPressed: () async {
+                              if (_loading) return;
                               setState(() {
                                 _loading = true;
                               });

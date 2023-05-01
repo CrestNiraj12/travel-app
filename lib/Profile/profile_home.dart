@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:traveller/components/loader.dart';
 import 'package:traveller/components/snackbar.dart';
 import 'package:traveller/constants/constant.dart';
 
@@ -11,6 +12,7 @@ class ProfileHome extends StatefulWidget {
 class _ProfileHomeState extends State<ProfileHome> {
   @override
   Widget build(BuildContext context) {
+    bool _loading = false;
     final user = FirebaseAuth.instance.currentUser;
     final imageURL = user?.photoURL ??
         "https://ui-avatars.com/api/?name=${user?.displayName ?? user?.email}&size=120";
@@ -80,20 +82,31 @@ class _ProfileHomeState extends State<ProfileHome> {
                     backgroundColor: Colors.white,
                   ),
                   onPressed: () {
+                    if (_loading) return;
+                    setState(() {
+                      _loading = true;
+                    });
                     FirebaseAuth.instance.signOut();
                     globalScaffoldKey.currentState?.showSnackBar(
                       showSnackBar(content: 'Successfully logged out'),
                     );
+                    if (mounted) {
+                      setState(() {
+                        _loading = false;
+                      });
+                    }
                   },
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    child: Text(
-                      "Logout",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 20.0),
-                    ),
+                    child: _loading
+                        ? Loader()
+                        : Text(
+                            "Logout",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20.0),
+                          ),
                   ),
                 ),
               ],

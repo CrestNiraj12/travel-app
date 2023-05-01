@@ -148,6 +148,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                     color: Colors.white,
                                   ),
                             onPressed: () async {
+                              if (_loading) return;
                               setState(() {
                                 _loading = true;
                               });
