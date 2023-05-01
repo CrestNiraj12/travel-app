@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:traveller/places/Places.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:traveller/recommendation/recommendation.dart';
+import 'package:traveller/states/bottom_nav.provider.dart';
 
-class HomeBody extends StatefulWidget {
+class HomeBody extends ConsumerWidget {
   @override
-  _HomeBodyState createState() => _HomeBodyState();
-}
-
-class _HomeBodyState extends State<HomeBody> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ListView(
       children: <Widget>[
         Container(
@@ -32,10 +28,7 @@ class _HomeBodyState extends State<HomeBody> {
               Expanded(
                 child: InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Places()),
-                      );
+                      ref.read(bottomNavProvider.notifier).state = 0;
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -61,7 +54,9 @@ class _HomeBodyState extends State<HomeBody> {
               ),
               Expanded(
                 child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      ref.read(bottomNavProvider.notifier).state = 1;
+                    },
                     child: Column(
                       children: <Widget>[
                         Icon(

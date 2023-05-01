@@ -1,15 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as fr;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:traveller/constants/constant.dart';
 import 'package:traveller/firebase_options.dart';
+import 'package:traveller/recommendation/list.dart';
 import 'package:traveller/recommendation/recomendation_model.dart';
 import 'package:traveller/traveller-main-page.dart';
-
-import 'recommendation/list.dart';
-import 'weather/utils/converters.dart';
+import 'package:traveller/weather/utils/converters.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,10 +17,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(
-    AppStateContainer(
-      child: BlocProvider(
-        create: (_) => BlocDelegate(null),
-        child: MainPage(),
+    fr.ProviderScope(
+      child: AppStateContainer(
+        child: BlocProvider(
+          create: (_) => BlocDelegate(null),
+          child: MainPage(),
+        ),
       ),
     ),
   );

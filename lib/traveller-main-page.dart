@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:traveller/Profile/profile.dart';
+import 'package:traveller/states/bottom_nav.provider.dart';
 
 import 'home/home.dart';
 import 'weather/weather-main.dart';
 
-class Traveller extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return TravellerState();
-  }
-}
-
-class TravellerState extends State<Traveller> {
-  int _page = 0;
+class Traveller extends ConsumerWidget {
   final position = [
     // Places(),
     // Search(),
@@ -21,42 +15,42 @@ class TravellerState extends State<Traveller> {
     Profile(),
   ];
 
-  Widget _getNavButton(String text, IconData icon, int index) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _page = index;
-        });
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              color: Colors.white,
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Text(
-              text,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final page = ref.watch(bottomNavProvider);
+
+    Widget _getNavButton(String text, IconData icon, int index) {
+      return InkWell(
+        onTap: () {
+          ref.read(bottomNavProvider.notifier).state = index;
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                color: Colors.white,
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Text(
+                text,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
-      body: position[_page],
+      body: position[page],
       extendBody: true,
       floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
       floatingActionButton: Container(
@@ -65,9 +59,7 @@ class TravellerState extends State<Traveller> {
         child: FloatingActionButton(
           backgroundColor: Colors.blueAccent,
           onPressed: () {
-            setState(() {
-              _page = 0;
-            });
+            ref.read(bottomNavProvider.notifier).state = 0;
           },
           child: new Icon(Icons.home),
         ),
