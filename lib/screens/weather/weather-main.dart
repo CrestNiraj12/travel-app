@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:traveller/screens/weather/api/api_keys.dart';
 import 'package:traveller/screens/weather/api/weather_api_client.dart';
 import 'package:traveller/screens/weather/bloc/weather_bloc.dart';
@@ -23,7 +22,8 @@ class Weather extends StatefulWidget {
   _WeatherState createState() => _WeatherState();
 }
 
-class _WeatherState extends State<Weather> with TickerProviderStateMixin {
+class _WeatherState extends State<Weather>
+    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   late WeatherBloc _weatherBloc;
   late TextEditingController _textController;
   late Position position;
@@ -221,51 +221,15 @@ class _WeatherState extends State<Weather> with TickerProviderStateMixin {
   }
 
   _fetchWeatherWithLocation() async {
-    await ph.Permission.locationWhenInUse.request();
-
-    switch (await ph.Permission.locationWhenInUse.serviceStatus) {
-      case ph.ServiceStatus.enabled:
-        break;
-      case ph.ServiceStatus.disabled:
-      case ph.ServiceStatus.notApplicable:
-        print('location permission denied');
-        _showLocationDeniedDialog();
-        throw Error();
-    }
-
     position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low);
+      desiredAccuracy: LocationAccuracy.high,
+    );
     _weatherBloc.add(
       FetchWeather(
         longitude: position.longitude,
         latitude: position.latitude,
       ),
     );
-  }
-
-  void _showLocationDeniedDialog() {
-    showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            title: Text('Location is disabled :(',
-                style: TextStyle(color: Colors.black)),
-            actions: <Widget>[
-              FilledButton(
-                child: Text(
-                  'Enable!',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-                onPressed: () {
-                  ph.openAppSettings();
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
   }
 
   void _fetchDefaultWeather() {
@@ -276,4 +240,7 @@ class _WeatherState extends State<Weather> with TickerProviderStateMixin {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

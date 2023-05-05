@@ -1,22 +1,78 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:traveller/screens/Profile/profile.dart';
+import 'package:traveller/screens/search/search.dart';
 import 'package:traveller/states/bottom_nav.provider.dart';
 
 import 'screens/home/home.dart';
 import 'screens/weather/weather-main.dart';
 
-class Traveller extends ConsumerWidget {
+class Traveller extends ConsumerStatefulWidget {
+  const Traveller({
+    Key? key,
+  });
+
+  @override
+  ConsumerState<Traveller> createState() => _TravellerState();
+}
+
+class _TravellerState extends ConsumerState<Traveller> {
   final position = [
-    // Places(),
-    // Search(),
     Home(),
     Weather(),
     Profile(),
+    Search(),
   ];
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    _requestLocationPermission();
+  }
+
+  void _requestLocationPermission() async {
+    await Permission.locationWhenInUse.request();
+
+    switch (await Permission.locationWhenInUse.serviceStatus) {
+      case ServiceStatus.enabled:
+        break;
+      case ServiceStatus.disabled:
+      case ServiceStatus.notApplicable:
+        print('location permission denied');
+        _showLocationDeniedDialog();
+        throw Error();
+    }
+  }
+
+  void _showLocationDeniedDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text('Location is disabled :(',
+              style: TextStyle(color: Colors.black)),
+          actions: <Widget>[
+            FilledButton(
+              child: Text(
+                'Enable!',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              onPressed: () {
+                openAppSettings();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final page = ref.watch(bottomNavProvider);
 
     Widget _getNavButton(String text, IconData icon, int index) {
@@ -78,7 +134,7 @@ class Traveller extends ConsumerWidget {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              _getNavButton('Search', Icons.search, 0),
+              _getNavButton('Search', Icons.search, 3),
               _getNavButton('Weather', Icons.wb_sunny, 1),
               _getNavButton('Profile', Icons.person, 2),
             ],

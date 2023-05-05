@@ -6,10 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:traveller/constants/constant.dart';
 import 'package:traveller/firebase_options.dart';
-import 'package:traveller/recommendation/list.dart';
 import 'package:traveller/recommendation/recomendation_model.dart';
-import 'package:traveller/traveller-main-page.dart';
 import 'package:traveller/screens/weather/utils/converters.dart';
+import 'package:traveller/traveller-main-page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,15 +56,13 @@ class MainPageState extends State<MainPage> {
         ChangeNotifierProvider.value(value: Recomends()),
       ],
       child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          home: Traveller(),
-          scaffoldMessengerKey: globalScaffoldKey,
-          routes: {
-            RecomDetail.routeName: (context) => RecomDetail(),
-          }),
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: Traveller(),
+        scaffoldMessengerKey: globalScaffoldKey,
+      ),
     );
   }
 }
