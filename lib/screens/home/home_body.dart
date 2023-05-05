@@ -34,7 +34,7 @@ class HomeBody extends ConsumerWidget {
               Expanded(
                 child: InkWell(
                     onTap: () {
-                      ref.read(bottomNavProvider.notifier).state = 0;
+                      ref.read(bottomNavProvider.notifier).state = 3;
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
