@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:traveller/profile/authenticate.dart';
-import 'package:traveller/profile/profile_home.dart';
+import 'package:traveller/screens/profile/authenticate.dart';
+import 'package:traveller/screens/profile/profile_home.dart';
 
 class Profile extends StatelessWidget {
   @override

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:traveller/weather/model/weather.dart';
+import 'package:traveller/screens/weather/model/weather.dart';
 
 abstract class WeatherState extends Equatable {
   WeatherState([List prop = const []]) : super();

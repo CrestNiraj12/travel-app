@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:traveller/weather/api/http_exception.dart';
-import 'package:traveller/weather/model/weather.dart';
+import 'package:traveller/screens/weather/api/http_exception.dart';
+import 'package:traveller/screens/weather/model/weather.dart';
 
 class WeatherApiClient {
   static const baseUrl = 'http://api.openweathermap.org';

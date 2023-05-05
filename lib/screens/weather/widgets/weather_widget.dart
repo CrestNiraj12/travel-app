@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:traveller/weather/model/weather.dart';
-import 'package:traveller/weather/widgets/value_tile.dart';
-import 'package:traveller/weather/widgets/weather_swipe_pager.dart';
+import 'package:traveller/screens/weather/model/weather.dart';
+import 'package:traveller/screens/weather/widgets/value_tile.dart';
+import 'package:traveller/screens/weather/widgets/weather_swipe_pager.dart';
 
 import 'forecast_horizontal_widget.dart';
 

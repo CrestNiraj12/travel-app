@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:traveller/main.dart';
-import 'package:traveller/weather/model/weather.dart';
-import 'package:traveller/weather/widgets/value_tile.dart';
+import 'package:traveller/screens/weather/model/weather.dart';
+import 'package:traveller/screens/weather/widgets/value_tile.dart';
 
 class CurrentConditions extends StatelessWidget {
   final Weather weather;

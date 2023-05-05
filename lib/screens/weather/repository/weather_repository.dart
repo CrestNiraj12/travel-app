@@ -1,5 +1,5 @@
-import 'package:traveller/weather/api/weather_api_client.dart';
-import 'package:traveller/weather/model/weather.dart';
+import 'package:traveller/screens/weather/api/weather_api_client.dart';
+import 'package:traveller/screens/weather/model/weather.dart';
 
 class WeatherRepository {
   final WeatherApiClient weatherApiClient;

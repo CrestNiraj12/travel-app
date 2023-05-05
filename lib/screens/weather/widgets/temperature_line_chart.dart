@@ -1,7 +1,7 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:traveller/main.dart';
-import 'package:traveller/weather/model/weather.dart';
+import 'package:traveller/screens/weather/model/weather.dart';
 
 class TemperatureLineChart extends StatelessWidget {
   final List<Weather>? weathers;

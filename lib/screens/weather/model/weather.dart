@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:traveller/weather/utils/converters.dart';
+import 'package:traveller/screens/weather/utils/converters.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 class Weather {

@@ -2,14 +2,14 @@ import 'package:flutter/foundation.dart';
 
 class Recomend with ChangeNotifier {
   final String id;
-  final String place;
+  final String name;
   final String country;
   final String imageUrl;
   final String description;
   final String location;
   Recomend({
     required this.id,
-    required this.place,
+    required this.name,
     required this.country,
     required this.imageUrl,
     required this.description,
@@ -21,7 +21,7 @@ class Recomends with ChangeNotifier {
   List<Recomend> _items = [
     Recomend(
       id: "1",
-      place: "Boudhanath Stupa",
+      name: "Boudhanath Stupa",
       country: "Nepal",
       imageUrl:
           "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Boudhanath_Stupa-IMG_7048.jpg/1280px-Boudhanath_Stupa-IMG_7048.jpg",

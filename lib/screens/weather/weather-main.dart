@@ -4,13 +4,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
-import 'package:traveller/weather/api/api_keys.dart';
-import 'package:traveller/weather/api/weather_api_client.dart';
-import 'package:traveller/weather/bloc/weather_bloc.dart';
-import 'package:traveller/weather/bloc/weather_event.dart';
-import 'package:traveller/weather/bloc/weather_state.dart';
-import 'package:traveller/weather/repository/weather_repository.dart';
-import 'package:traveller/weather/widgets/weather_widget.dart';
+import 'package:traveller/screens/weather/api/api_keys.dart';
+import 'package:traveller/screens/weather/api/weather_api_client.dart';
+import 'package:traveller/screens/weather/bloc/weather_bloc.dart';
+import 'package:traveller/screens/weather/bloc/weather_event.dart';
+import 'package:traveller/screens/weather/bloc/weather_state.dart';
+import 'package:traveller/screens/weather/repository/weather_repository.dart';
+import 'package:traveller/screens/weather/widgets/weather_widget.dart';
 
 class Weather extends StatefulWidget {
   final WeatherRepository weatherRepository = WeatherRepository(

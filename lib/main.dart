@@ -9,7 +9,7 @@ import 'package:traveller/firebase_options.dart';
 import 'package:traveller/recommendation/list.dart';
 import 'package:traveller/recommendation/recomendation_model.dart';
 import 'package:traveller/traveller-main-page.dart';
-import 'package:traveller/weather/utils/converters.dart';
+import 'package:traveller/screens/weather/utils/converters.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,11 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:traveller/models/destination.dart';
 import 'package:traveller/recommendation/recommendation.dart';
+import 'package:traveller/screens/destination/destination_screen.dart';
 import 'package:traveller/states/bottom_nav.provider.dart';
 
 class HomeBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    CollectionReference destinationsDoc =
+        FirebaseFirestore.instance.collection('destinations');
+
     return ListView(
       children: <Widget>[
         Container(
@@ -100,38 +106,72 @@ class HomeBody extends ConsumerWidget {
             ),
           ),
         ),
-        Container(
-            decoration: BoxDecoration(
-                boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 50)]),
-            margin: EdgeInsets.only(top: 10, bottom: 10),
-            padding: EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 5),
-            height: 270,
-            width: double.infinity,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 10,
-              itemBuilder: (BuildContext context, int i) => GestureDetector(
-                onTap: () {},
-                child: Card(
-                  elevation: 1,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    width: 340.0,
-                    child: Stack(
-                      children: <Widget>[
-                        Positioned.fill(
-                            child: Image.network(
-                          'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg/1280px-Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg',
-                          fit: BoxFit.cover,
-                        )),
-                      ],
-                    ),
-                  ),
+        FutureBuilder<QuerySnapshot>(
+          future: destinationsDoc.get(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError || !snapshot.hasData)
+              return SizedBox.shrink();
+
+            final destinations = snapshot.data?.docs ?? [];
+            if (destinations.isNotEmpty) {
+              return Container(
+                decoration: BoxDecoration(
+                    boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 50)]),
+                margin: EdgeInsets.only(top: 10, bottom: 10),
+                padding:
+                    EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 5),
+                height: 270,
+                width: double.infinity,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: destinations.length,
+                  itemBuilder: (BuildContext context, int i) {
+                    final id = destinations[i].id;
+                    var data = destinations[i].data();
+                    if (data != null) {
+                      data = data as Map<String, dynamic>;
+                      data['id'] = id;
+
+                      final destination = Destination.fromJson(data);
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  DestinationScreen(destination: destination),
+                            ),
+                          );
+                        },
+                        child: Card(
+                          elevation: 1,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            width: 340.0,
+                            child: Stack(
+                              children: <Widget>[
+                                Positioned.fill(
+                                  child: Image.network(
+                                    destination.imageUrl,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    return null;
+                  },
                 ),
-              ),
-            )),
+              );
+            }
+            return SizedBox.shrink();
+          },
+        ),
       ],
     );
   }

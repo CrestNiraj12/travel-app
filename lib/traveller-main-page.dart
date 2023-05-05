@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:traveller/Profile/profile.dart';
+import 'package:traveller/screens/Profile/profile.dart';
 import 'package:traveller/states/bottom_nav.provider.dart';
 
-import 'home/home.dart';
-import 'weather/weather-main.dart';
+import 'screens/home/home.dart';
+import 'screens/weather/weather-main.dart';
 
 class Traveller extends ConsumerWidget {
   final position = [
