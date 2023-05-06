@@ -18,8 +18,6 @@ class Traveller extends ConsumerStatefulWidget {
 }
 
 class _TravellerState extends ConsumerState<Traveller> {
-  final pageController = PageController();
-
   void onPageChanged(int index) {
     ref.read(bottomNavProvider.notifier).state = index;
   }
