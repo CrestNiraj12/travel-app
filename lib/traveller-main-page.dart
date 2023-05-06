@@ -112,6 +112,7 @@ class _TravellerState extends ConsumerState<Traveller> {
         controller: pageController,
         onPageChanged: onPageChanged,
         children: pages,
+        physics: NeverScrollableScrollPhysics(),
       ),
       extendBody: true,
       floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,

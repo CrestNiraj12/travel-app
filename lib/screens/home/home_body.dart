@@ -9,7 +9,7 @@ import 'package:traveller/states/destination/destination_list.provider.dart';
 class HomeBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final destinations = ref.watch(destinationNotifierProvider);
+    final destinations = ref.watch(destinationListProvider);
 
     return ListView(
       children: <Widget>[

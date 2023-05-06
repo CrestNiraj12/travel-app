@@ -157,9 +157,7 @@ class _WeatherState extends State<Weather>
                         );
                       }
                       return Center(
-                        child: CircularProgressIndicator(
-                          backgroundColor: Colors.red,
-                        ),
+                        child: CircularProgressIndicator(),
                       );
                     },
                   ),

@@ -9,6 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:traveller/components/image.dart';
 import 'package:traveller/models/destination.dart';
 import 'package:traveller/states/current_location/current_location.provider.dart';
+import 'package:traveller/utils/distance.dart';
 
 class DestinationScreen extends ConsumerStatefulWidget {
   const DestinationScreen({
@@ -229,6 +230,28 @@ class _DestinationScreenState extends ConsumerState<DestinationScreen> {
                                         child: Row(
                                           children: <Widget>[
                                             Text(
+                                              "Place :",
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(
+                                              width: 7,
+                                            ),
+                                            Text(
+                                              destination.name,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Row(
+                                          children: <Widget>[
+                                            Text(
                                               "Country :",
                                               style: TextStyle(
                                                   fontSize: 15,
@@ -251,7 +274,7 @@ class _DestinationScreenState extends ConsumerState<DestinationScreen> {
                                         child: Row(
                                           children: <Widget>[
                                             Text(
-                                              "Place :",
+                                              "Distance :",
                                               style: TextStyle(
                                                   fontSize: 15,
                                                   color: Colors.white,
@@ -261,7 +284,8 @@ class _DestinationScreenState extends ConsumerState<DestinationScreen> {
                                               width: 7,
                                             ),
                                             Text(
-                                              destination.name,
+                                              getDistance(
+                                                  ref, destination.location),
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 15),
