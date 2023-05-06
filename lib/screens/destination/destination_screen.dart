@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:traveller/components/image.dart';
 import 'package:traveller/models/destination.dart';
-import 'package:traveller/utils/current_location.dart';
+import 'package:traveller/states/current_location/current_location.provider.dart';
 
-class DestinationScreen extends StatefulWidget {
+class DestinationScreen extends ConsumerStatefulWidget {
   const DestinationScreen({
     required this.destination,
   });
@@ -19,19 +21,17 @@ class DestinationScreen extends StatefulWidget {
   _DestinationScreenState createState() => _DestinationScreenState();
 }
 
-class _DestinationScreenState extends State<DestinationScreen> {
+class _DestinationScreenState extends ConsumerState<DestinationScreen> {
   late String firstHalf;
   late String secondHalf;
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
   BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
-  Position? _currentLocation;
 
   @override
   void initState() {
     _addCustomMarkerIcon();
-    _getCurrentLocation();
     super.initState();
   }
 
@@ -43,13 +43,14 @@ class _DestinationScreenState extends State<DestinationScreen> {
     });
   }
 
-  Future<List<PointLatLng>?> _getPolylinePoints(GeoPoint destination) async {
+  Future<List<PointLatLng>?> _getPolylinePoints(
+      Position? currentLocation, GeoPoint destination) async {
     PolylinePoints polylinePoints = PolylinePoints();
 
-    if (_currentLocation != null) {
+    if (currentLocation != null) {
       PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
         "AIzaSyAWevH32YxcDu0lHWiqvRMQTlWHkNHcZ4k",
-        PointLatLng(_currentLocation!.latitude, _currentLocation!.longitude),
+        PointLatLng(currentLocation.latitude, currentLocation.longitude),
         PointLatLng(destination.latitude, destination.longitude),
         travelMode: TravelMode.driving,
       );
@@ -61,16 +62,9 @@ class _DestinationScreenState extends State<DestinationScreen> {
 
   bool flag = true;
 
-  void _getCurrentLocation() async {
-    final pos = await getCurrentLocation();
-    if (mounted)
-      setState(() {
-        _currentLocation = pos;
-      });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final currentLocation = ref.watch(currentLocationProvider).data;
     final destination = widget.destination;
     final _center = LatLng(
       destination.location.latitude,
@@ -100,16 +94,16 @@ class _DestinationScreenState extends State<DestinationScreen> {
                   bottomRight: Radius.circular(10),
                   bottomLeft: Radius.circular(10),
                 ),
-                child: Image.network(
-                  destination.imageUrl,
-                  fit: BoxFit.fill,
-                  height: 280,
+                child: CachedImage(
                   width: double.infinity,
+                  height: 280,
+                  imageUrl: destination.imageUrl,
                 ),
               ),
             ),
             FutureBuilder<List<PointLatLng>?>(
-                future: _getPolylinePoints(destination.location),
+                future:
+                    _getPolylinePoints(currentLocation, destination.location),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Padding(
@@ -186,12 +180,12 @@ class _DestinationScreenState extends State<DestinationScreen> {
                             destination.location.longitude,
                           ),
                         ),
-                        if (_currentLocation != null)
+                        if (currentLocation != null)
                           Marker(
                             markerId: const MarkerId('current'),
                             position: LatLng(
-                              _currentLocation!.latitude,
-                              _currentLocation!.longitude,
+                              currentLocation.latitude,
+                              currentLocation.longitude,
                             ),
                             icon: markerIcon,
                           ),
@@ -203,6 +197,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
               padding: EdgeInsets.only(top: 15.0),
               child: ListView(
                 shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(top: 3, left: 15, right: 15),

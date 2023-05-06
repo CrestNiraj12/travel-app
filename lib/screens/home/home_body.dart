@@ -1,16 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:traveller/models/destination.dart';
+import 'package:traveller/components/image.dart';
 import 'package:traveller/recommendation/recommendation.dart';
 import 'package:traveller/screens/destination/destination_screen.dart';
 import 'package:traveller/states/bottom_nav.provider.dart';
+import 'package:traveller/states/destination/destination_list.provider.dart';
 
 class HomeBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    CollectionReference destinationsDoc =
-        FirebaseFirestore.instance.collection('destinations');
+    final destinations = ref.watch(destinationNotifierProvider);
 
     return ListView(
       children: <Widget>[
@@ -106,71 +105,52 @@ class HomeBody extends ConsumerWidget {
             ),
           ),
         ),
-        FutureBuilder<QuerySnapshot>(
-          future: destinationsDoc.get(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError || !snapshot.hasData)
-              return SizedBox.shrink();
-
-            final destinations = snapshot.data?.docs ?? [];
-            if (destinations.isNotEmpty) {
-              return Container(
-                decoration: BoxDecoration(
-                    boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 50)]),
-                margin: EdgeInsets.only(top: 10, bottom: 10),
-                padding:
-                    EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 5),
-                height: 270,
-                width: double.infinity,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: destinations.length,
-                  itemBuilder: (BuildContext context, int i) {
-                    final id = destinations[i].id;
-                    var data = destinations[i].data();
-                    if (data != null) {
-                      data = data as Map<String, dynamic>;
-                      data['id'] = id;
-
-                      final destination = Destination.fromJson(data);
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  DestinationScreen(destination: destination),
-                            ),
-                          );
-                        },
-                        child: Card(
-                          elevation: 1,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            width: 340.0,
-                            child: Stack(
-                              children: <Widget>[
-                                Positioned.fill(
-                                  child: Image.network(
-                                    destination.imageUrl,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ],
+        destinations.mapStatesToWidget(
+          loading: SizedBox.shrink(),
+          data: Container(
+            decoration: BoxDecoration(
+                boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 50)]),
+            margin: EdgeInsets.only(top: 10, bottom: 10),
+            padding: EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 5),
+            height: 270,
+            width: double.infinity,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: destinations.allData.length,
+              itemBuilder: (BuildContext context, int i) {
+                final destination = destinations.allData[i];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            DestinationScreen(destination: destination),
+                      ),
+                    );
+                  },
+                  child: Card(
+                    elevation: 1,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      width: 340.0,
+                      child: Stack(
+                        children: <Widget>[
+                          Positioned.fill(
+                            child: CachedImage(
+                              imageUrl: destination.imageUrl,
+                              width: double.infinity,
                             ),
                           ),
-                        ),
-                      );
-                    }
-                    return null;
-                  },
-                ),
-              );
-            }
-            return SizedBox.shrink();
-          },
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
         ),
       ],
     );

@@ -18,7 +18,13 @@ class Traveller extends ConsumerStatefulWidget {
 }
 
 class _TravellerState extends ConsumerState<Traveller> {
-  final position = [
+  final pageController = PageController();
+
+  void onPageChanged(int index) {
+    ref.read(bottomNavProvider.notifier).state = index;
+  }
+
+  final pages = [
     Home(),
     Weather(),
     Profile(),
@@ -73,12 +79,10 @@ class _TravellerState extends ConsumerState<Traveller> {
 
   @override
   Widget build(BuildContext context) {
-    final page = ref.watch(bottomNavProvider);
-
     Widget _getNavButton(String text, IconData icon, int index) {
       return InkWell(
         onTap: () {
-          ref.read(bottomNavProvider.notifier).state = index;
+          pageController.jumpToPage(index);
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -106,7 +110,11 @@ class _TravellerState extends ConsumerState<Traveller> {
     }
 
     return Scaffold(
-      body: position[page],
+      body: PageView(
+        controller: pageController,
+        onPageChanged: onPageChanged,
+        children: pages,
+      ),
       extendBody: true,
       floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
       floatingActionButton: Container(
@@ -115,7 +123,7 @@ class _TravellerState extends ConsumerState<Traveller> {
         child: FloatingActionButton(
           backgroundColor: Colors.blueAccent,
           onPressed: () {
-            ref.read(bottomNavProvider.notifier).state = 0;
+            pageController.jumpToPage(0);
           },
           child: new Icon(Icons.home),
         ),

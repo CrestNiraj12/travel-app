@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
-import 'home_body.dart';
+import 'package:traveller/screens/home/home_body.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super();
+
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return <Widget>[
@@ -32,4 +39,7 @@ class Home extends StatelessWidget {
       body: HomeBody(),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
