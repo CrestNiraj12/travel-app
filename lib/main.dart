@@ -1,15 +1,18 @@
+import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as fr;
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:traveller/constants/constant.dart';
 import 'package:traveller/firebase_options.dart';
-import 'package:traveller/recommendation/recomendation_model.dart';
 import 'package:traveller/screens/weather/utils/converters.dart';
 import 'package:traveller/traveller-main-page.dart';
 
+import 'utils/dio.dart';
+
+final httpClientProvider = fr.Provider<Dio>((_) => throw UnimplementedError());
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -17,6 +20,9 @@ void main() async {
   );
   runApp(
     fr.ProviderScope(
+      overrides: [
+        httpClientProvider.overrideWith((ref) => HttpClient(ref).httpClient),
+      ],
       child: AppStateContainer(
         child: BlocProvider(
           create: (_) => BlocDelegate(null),
@@ -51,23 +57,18 @@ class BlocDelegate extends Bloc<void, void> {
 class MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(value: Recomends()),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: Traveller(),
-        scaffoldMessengerKey: globalScaffoldKey,
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: Traveller(),
+      scaffoldMessengerKey: globalScaffoldKey,
     );
   }
 }
 
-class AppStateContainer extends StatefulWidget {
+class AppStateContainer extends ConsumerStatefulWidget {
   final Widget child;
 
   AppStateContainer({required this.child});
@@ -82,12 +83,13 @@ class AppStateContainer extends StatefulWidget {
   }
 }
 
-class _AppStateContainerState extends State<AppStateContainer> {
+class _AppStateContainerState extends ConsumerState<AppStateContainer> {
   TemperatureUnit temperatureUnit = TemperatureUnit.celsius;
 
   @override
   initState() {
     super.initState();
+
     SharedPreferences.getInstance().then((sharedPref) {
       setState(() {
         temperatureUnit = TemperatureUnit.values[TemperatureUnit.celsius.index];

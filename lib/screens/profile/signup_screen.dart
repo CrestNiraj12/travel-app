@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:traveller/components/loader.dart';
 import 'package:traveller/constants/constant.dart';
-import 'package:traveller/utils/firebase_service.dart';
-
-class Registration extends StatefulWidget {
-  final Function toggleView;
-  Registration({required this.toggleView});
-  @override
-  _RegistrationState createState() => _RegistrationState();
-}
+import 'package:traveller/states/auth/auth.provider.dart';
 
 final passwordValidator = MultiValidator([
   RequiredValidator(errorText: 'Password is required'),
@@ -30,17 +24,26 @@ final nameValidator = MultiValidator([
   MinLengthValidator(3, errorText: 'Name must be at least 3 characters long'),
 ]);
 
-class _RegistrationState extends State<Registration> {
+class Registration extends ConsumerStatefulWidget {
+  final Function toggleView;
+  Registration({required this.toggleView});
+  @override
+  _RegistrationState createState() => _RegistrationState();
+}
+
+class _RegistrationState extends ConsumerState<Registration> {
   final _formKey = GlobalKey<FormState>();
   bool _hidePassword = true;
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  bool _loading = false;
+  final _loadingState = StateProvider<bool>((ref) => false);
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(_loadingState);
+
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
@@ -202,7 +205,7 @@ class _RegistrationState extends State<Registration> {
                               ),
                               backgroundColor: Colors.black45,
                             ),
-                            child: _loading
+                            child: isLoading
                                 ? Loader()
                                 : Icon(
                                     Icons.arrow_forward,
@@ -210,20 +213,23 @@ class _RegistrationState extends State<Registration> {
                                     color: Colors.white,
                                   ),
                             onPressed: () async {
-                              if (_loading) return;
-                              setState(() {
-                                _loading = true;
-                              });
+                              if (isLoading) return;
+
+                              ref.read(_loadingState.notifier).state = true;
+
                               if (_formKey.currentState?.validate() ?? false) {
-                                await createUserWithEmailAndPassword(
-                                  email: _emailController.text,
-                                  password: _passwordController.text,
-                                  name: _nameController.text,
-                                );
+                                await ref.read(authProvider.notifier).signUp(
+                                      email: _emailController.text,
+                                      password: _passwordController.text,
+                                      name: _nameController.text,
+                                      passwordConfirmation:
+                                          _confirmPasswordController.text,
+                                    );
                               }
                               if (mounted) {
                                 setState(() {
-                                  _loading = false;
+                                  ref.read(_loadingState.notifier).state =
+                                      false;
                                 });
                               }
                             },

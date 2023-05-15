@@ -8,3 +8,11 @@ InputDecoration textInputDecoration = InputDecoration(
 );
 
 final globalScaffoldKey = GlobalKey<ScaffoldMessengerState>();
+
+class Screens {
+  Screens._();
+  static const home = 0;
+  static const search = 1;
+  static const weather = 2;
+  static const profile = 3;
+}

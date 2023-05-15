@@ -12,7 +12,7 @@ SnackBar showSnackBar({
   Color color;
   switch (type) {
     case SnackbarType.error:
-      color = Colors.redAccent;
+      color = Colors.red[300] ?? Colors.red;
       break;
     default:
       color = Colors.green;

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:traveller/components/loader.dart';
 import 'package:traveller/constants/constant.dart';
-import 'package:traveller/utils/firebase_service.dart';
+import 'package:traveller/states/auth/auth.provider.dart';
 
 final passwordValidator = MultiValidator([
   RequiredValidator(errorText: 'password is required'),
@@ -15,7 +16,7 @@ final emailValidator = MultiValidator([
       errorText: 'Invalid Email')
 ]);
 
-class SignInScreen extends StatefulWidget {
+class SignInScreen extends ConsumerStatefulWidget {
   final Function toggleView;
   SignInScreen({required this.toggleView});
 
@@ -23,16 +24,22 @@ class SignInScreen extends StatefulWidget {
   _SignInScreenState createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _SignInScreenState extends ConsumerState<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _loading = false;
+  final _loadingState = StateProvider<bool>((ref) => false);
+  final _hidePasswordState = StateProvider<bool>((ref) => true);
 
-  bool _hidePassword = true;
+  void hidePassword(bool hide) {
+    ref.read(_hidePasswordState.notifier).state = !hide;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(_loadingState);
+    final hide = ref.watch(_hidePasswordState);
+
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
@@ -98,34 +105,22 @@ class _SignInScreenState extends State<SignInScreen> {
                             height: 15,
                           ),
                           TextFormField(
-                            obscureText: _hidePassword,
+                            obscureText: hide,
                             controller: _passwordController,
                             decoration: textInputDecoration.copyWith(
-                                hintText: "Password",
-                                prefixIcon: Icon(
-                                  Icons.lock,
+                              hintText: "Password",
+                              prefixIcon: Icon(
+                                Icons.lock,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  hide
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
                                 ),
-                                suffixIcon: _hidePassword
-                                    ? IconButton(
-                                        icon: Icon(
-                                          Icons.visibility,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            _hidePassword = !_hidePassword;
-                                          });
-                                        },
-                                      )
-                                    : IconButton(
-                                        icon: Icon(
-                                          Icons.visibility_off,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            _hidePassword = !_hidePassword;
-                                          });
-                                        },
-                                      )),
+                                onPressed: () => hidePassword(hide),
+                              ),
+                            ),
                             validator: passwordValidator,
                             keyboardType: TextInputType.emailAddress,
                           ),
@@ -140,7 +135,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 borderRadius: BorderRadius.circular(12.0),
                               ),
                             ),
-                            child: _loading
+                            child: isLoading
                                 ? Loader()
                                 : Icon(
                                     Icons.arrow_forward,
@@ -148,21 +143,18 @@ class _SignInScreenState extends State<SignInScreen> {
                                     color: Colors.white,
                                   ),
                             onPressed: () async {
-                              if (_loading) return;
-                              setState(() {
-                                _loading = true;
-                              });
+                              if (isLoading) return;
+
+                              ref.read(_loadingState.notifier).state = true;
+
                               if (_formKey.currentState?.validate() ?? false) {
-                                await signInWithEmailAndPassword(
-                                  context: context,
-                                  email: _emailController.text,
-                                  password: _passwordController.text,
-                                );
+                                await ref.read(authProvider.notifier).loginUser(
+                                      email: _emailController.text,
+                                      password: _passwordController.text,
+                                    );
                               }
                               if (mounted) {
-                                setState(() {
-                                  _loading = false;
-                                });
+                                ref.read(_loadingState.notifier).state = false;
                               }
                             },
                           ),

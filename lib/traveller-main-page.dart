@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:traveller/constants/constant.dart';
 import 'package:traveller/screens/Profile/profile.dart';
 import 'package:traveller/screens/search/search.dart';
+import 'package:traveller/states/auth_redirection/auth_redirection.provider.dart';
 import 'package:traveller/states/bottom_nav.provider.dart';
 
 import 'screens/home/home.dart';
@@ -24,9 +26,9 @@ class _TravellerState extends ConsumerState<Traveller> {
 
   final pages = [
     Home(),
+    Search(),
     Weather(),
     Profile(),
-    Search(),
   ];
 
   @override
@@ -77,6 +79,8 @@ class _TravellerState extends ConsumerState<Traveller> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(authRedirectionProvider, (_, __) {});
+
     Widget _getNavButton(String text, IconData icon, int index) {
       return InkWell(
         onTap: () {
@@ -141,9 +145,9 @@ class _TravellerState extends ConsumerState<Traveller> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              _getNavButton('Search', Icons.search, 3),
-              _getNavButton('Weather', Icons.wb_sunny, 1),
-              _getNavButton('Profile', Icons.person, 2),
+              _getNavButton('Search', Icons.search, Screens.search),
+              _getNavButton('Weather', Icons.wb_sunny, Screens.weather),
+              _getNavButton('Profile', Icons.person, Screens.profile),
             ],
           ),
         ),
