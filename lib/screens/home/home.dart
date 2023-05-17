@@ -33,6 +33,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
               background: Image.asset(
                 "images/bg.jpg",
                 fit: BoxFit.cover,
+                color: Colors.black45,
+                colorBlendMode: BlendMode.colorBurn,
               ),
             ),
           ),
