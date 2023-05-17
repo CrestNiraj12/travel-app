@@ -7,6 +7,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:traveller/components/image.dart';
 import 'package:traveller/models/destination.dart';
+import 'package:traveller/services/history_service.dart';
+import 'package:traveller/states/auth_redirection/auth_redirection.provider.dart';
 import 'package:traveller/states/current_location/current_location.provider.dart';
 import 'package:traveller/utils/distance.dart';
 
@@ -33,6 +35,7 @@ class _DestinationScreenState extends ConsumerState<DestinationScreen> {
   void initState() {
     _addCustomMarkerIcon();
     super.initState();
+    _addToHistory();
   }
 
   void _addCustomMarkerIcon() async {
@@ -41,6 +44,12 @@ class _DestinationScreenState extends ConsumerState<DestinationScreen> {
     setState(() {
       markerIcon = icon;
     });
+  }
+
+  void _addToHistory() async {
+    if (ref.read(authRedirectionProvider.notifier).isAuthenticated) {
+      ref.read(historyServiceProvider).addToHistory(widget.destination.id);
+    }
   }
 
   Future<List<PointLatLng>?> _getPolylinePoints(

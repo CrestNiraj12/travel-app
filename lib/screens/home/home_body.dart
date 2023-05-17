@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:traveller/components/image.dart';
+import 'package:traveller/constants/constant.dart';
 import 'package:traveller/recommendation/recommendation.dart';
 import 'package:traveller/screens/destination/destination_screen.dart';
 import 'package:traveller/states/bottom_nav.provider.dart';
@@ -38,7 +41,7 @@ class HomeBody extends ConsumerWidget {
                 Expanded(
                   child: InkWell(
                       onTap: () {
-                        pageController.jumpToPage(3);
+                        pageController.jumpToPage(Screens.search);
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -65,7 +68,7 @@ class HomeBody extends ConsumerWidget {
                 Expanded(
                   child: InkWell(
                       onTap: () {
-                        pageController.jumpToPage(1);
+                        pageController.jumpToPage(Screens.weather);
                       },
                       child: Column(
                         children: <Widget>[
@@ -121,7 +124,7 @@ class HomeBody extends ConsumerWidget {
               width: double.infinity,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: destinations.allData.length,
+                itemCount: min(destinations.allData.length, 10),
                 itemBuilder: (BuildContext context, int i) {
                   final destination = destinations.allData[i];
                   return GestureDetector(

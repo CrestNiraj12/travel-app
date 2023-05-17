@@ -29,7 +29,7 @@ class AuthRedirectionNotifier extends StateNotifier<NavigationFlowState> {
     });
   }
 
-  bool get _isAuthenticated {
+  bool get isAuthenticated {
     return _authState?.hasUser;
   }
 
@@ -56,7 +56,7 @@ class AuthRedirectionNotifier extends StateNotifier<NavigationFlowState> {
         ),
       );
     }
-    if (_isAuthenticated) {
+    if (isAuthenticated) {
       globalScaffoldKey.currentState?.showSnackBar(
         showSnackBar(
           content: "Success",

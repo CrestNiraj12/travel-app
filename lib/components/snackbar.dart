@@ -15,11 +15,11 @@ SnackBar showSnackBar({
       color = Colors.red[300] ?? Colors.red;
       break;
     default:
-      color = Colors.green;
+      color = Colors.green[600] ?? Colors.green;
   }
   return SnackBar(
     content: Text(content),
     backgroundColor: color,
-    behavior: SnackBarBehavior.floating,
+    behavior: SnackBarBehavior.fixed,
   );
 }

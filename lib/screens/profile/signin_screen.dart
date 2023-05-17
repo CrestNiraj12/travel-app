@@ -48,7 +48,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
             children: <Widget>[
               Center(
                 child: Image.asset(
-                  "images/story.png",
+                  "images/logo.png",
                   color: Colors.blueAccent,
                   height: 80,
                   width: 80,

@@ -19,7 +19,7 @@ class CachedImage extends StatelessWidget {
       height: 100,
       width: 100,
       fit: BoxFit.cover,
-      imageUrl: "${Config.host}/storage/images/$imageUrl",
+      imageUrl: "${Config.imagePath}/$imageUrl",
       progressIndicatorBuilder: (context, url, downloadProgress) => Center(
         child: SizedBox(
           height: 50,

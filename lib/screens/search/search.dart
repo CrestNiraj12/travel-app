@@ -172,10 +172,7 @@ class DestinationItem extends ConsumerWidget {
                                       maxLines: 1,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .titleLarge
-                                          ?.copyWith(
-                                            color: Colors.grey,
-                                          ),
+                                          .titleLarge,
                                     ),
                                     Container(height: 5),
                                     Text(
@@ -188,7 +185,7 @@ class DestinationItem extends ConsumerWidget {
                                           .textTheme
                                           .bodySmall
                                           ?.copyWith(
-                                            color: Colors.grey[500],
+                                            color: Colors.grey[700],
                                           ),
                                     ),
                                     Container(height: 10),
