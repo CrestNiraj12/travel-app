@@ -7,6 +7,7 @@ final destinationServiceProvider =
 
 abstract class IDestinationService {
   Future<List<Destination>> getDestinations(String query);
+  Future<Destination> getDestination(int id);
   Future<List<Destination>> searchDestinations(String query);
 }
 
@@ -29,6 +30,15 @@ class DestinationService extends IDestinationService {
       destinations.add(Destination.fromJson(dest));
     }
     return destinations;
+  }
+
+  @override
+  Future<Destination> getDestination(int id) async {
+    final response = await ref.read(httpClientProvider).get(
+          "/destinations/${id}",
+        );
+    final data = Destination.fromJson(response.data);
+    return data;
   }
 
   @override

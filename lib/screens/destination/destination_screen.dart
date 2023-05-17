@@ -1,398 +1,315 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:traveller/components/image.dart';
-import 'package:traveller/models/destination.dart';
+import 'package:traveller/screens/destination/google_maps.dart';
+import 'package:traveller/screens/destination/reviews.dart';
 import 'package:traveller/services/history_service.dart';
 import 'package:traveller/states/auth_redirection/auth_redirection.provider.dart';
 import 'package:traveller/states/current_location/current_location.provider.dart';
+import 'package:traveller/states/destination/destination_list.provider.dart';
 import 'package:traveller/utils/distance.dart';
 
 class DestinationScreen extends ConsumerStatefulWidget {
   const DestinationScreen({
-    required this.destination,
+    required this.destinationId,
   });
 
-  final Destination destination;
+  final int destinationId;
 
   @override
   _DestinationScreenState createState() => _DestinationScreenState();
 }
 
 class _DestinationScreenState extends ConsumerState<DestinationScreen> {
-  late String firstHalf;
-  late String secondHalf;
-  final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
-
-  BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
-
   @override
   void initState() {
-    _addCustomMarkerIcon();
     super.initState();
     _addToHistory();
   }
 
-  void _addCustomMarkerIcon() async {
-    final icon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(), "images/gps.png");
-    setState(() {
-      markerIcon = icon;
-    });
-  }
-
   void _addToHistory() async {
     if (ref.read(authRedirectionProvider.notifier).isAuthenticated) {
-      ref.read(historyServiceProvider).addToHistory(widget.destination.id);
+      ref.read(historyServiceProvider).addToHistory(widget.destinationId);
     }
   }
-
-  Future<List<PointLatLng>?> _getPolylinePoints(
-      Position? currentLocation, double latitude, double longitude) async {
-    PolylinePoints polylinePoints = PolylinePoints();
-
-    if (currentLocation != null) {
-      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        "AIzaSyAWevH32YxcDu0lHWiqvRMQTlWHkNHcZ4k",
-        PointLatLng(currentLocation.latitude, currentLocation.longitude),
-        PointLatLng(latitude, longitude),
-        travelMode: TravelMode.driving,
-      );
-      return result.points;
-    }
-
-    return null;
-  }
-
-  bool flag = true;
 
   @override
   Widget build(BuildContext context) {
     final currentLocation = ref.watch(currentLocationProvider).data;
-    final destination = widget.destination;
-    final _center = LatLng(
-      destination.latitude,
-      destination.longitude,
-    );
+    final destination = ref.watch(destinationProvider(widget.destinationId));
 
-    if (destination.description.length > 50) {
-      firstHalf = destination.description.substring(0, 100);
-      secondHalf =
-          destination.description.substring(50, destination.description.length);
-    } else {
-      firstHalf = destination.description;
-      secondHalf = "";
-    }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(destination.name),
+    return destination.when(
+      loading: () => Scaffold(
+        appBar: AppBar(
+          title: Text('Destination'),
+        ),
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              height: 220,
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(10),
-                  bottomLeft: Radius.circular(10),
-                ),
-                child: CachedImage(
-                  width: double.infinity,
-                  height: 280,
-                  imageUrl: destination.imageUrl,
-                ),
-              ),
-            ),
-            FutureBuilder<List<PointLatLng>?>(
-                future: _getPolylinePoints(
-                  currentLocation,
-                  destination.latitude,
-                  destination.longitude,
-                ),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(vertical: 25),
-                      child: Center(
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'Map loading...',
-                              style: TextStyle(
-                                fontSize: 8,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-
-                  if (snapshot.hasError || !snapshot.hasData)
-                    return SizedBox.shrink();
-
-                  final polyLines = snapshot.data;
-                  Map<PolylineId, Polyline> polylinesMap = {};
-                  List<LatLng> polylineCoordinates = [];
-
-                  if (polyLines != null && polyLines.isNotEmpty) {
-                    polyLines.forEach((PointLatLng point) {
-                      polylineCoordinates
-                          .add(LatLng(point.latitude, point.longitude));
-                    });
-                  }
-
-                  final id = PolylineId('route');
-                  Polyline polyline = Polyline(
-                    polylineId: id,
-                    color: Colors.red,
-                    points: polylineCoordinates,
-                    width: 3,
-                  );
-
-                  polylinesMap[id] = polyline;
-
-                  return SizedBox(
-                    height: 300,
-                    child: GoogleMap(
-                      mapType: MapType.normal,
-                      myLocationEnabled: true,
-                      initialCameraPosition: CameraPosition(
-                        target: _center,
-                        zoom: 10,
-                      ),
-                      onMapCreated: (GoogleMapController controller) {
-                        try {
-                          _controller.complete(controller);
-                        } catch (e) {
-                          return;
-                        }
-                      },
-                      polylines: Set<Polyline>.of(polylinesMap.values),
-                      markers: {
-                        Marker(
-                          markerId: const MarkerId('destination'),
-                          position: LatLng(
-                            destination.latitude,
-                            destination.longitude,
-                          ),
-                        ),
-                        if (currentLocation != null)
-                          Marker(
-                            markerId: const MarkerId('current'),
-                            position: LatLng(
-                              currentLocation.latitude,
-                              currentLocation.longitude,
-                            ),
-                            icon: markerIcon,
-                          ),
-                      },
-                    ),
-                  );
-                }),
-            Padding(
-              padding: EdgeInsets.only(top: 15.0),
-              child: ListView(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+      data: (destination) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(destination.name),
+          ),
+          body: RefreshIndicator(
+            onRefresh: () async {
+              ref
+                  .read(destinationProvider(widget.destinationId).notifier)
+                  .initialize();
+            },
+            child: SingleChildScrollView(
+              child: Column(
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 3, left: 15, right: 15),
+                  Container(
+                    width: double.infinity,
+                    height: 220,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: Card(
-                        child: Container(
-                            height: 90,
-                            color: Color.fromRGBO(55, 70, 105, 1),
-                            child: Row(
-                              children: <Widget>[
-                                Container(
-                                  height: 90,
-                                  width: 70,
-                                  color: Color.fromRGBO(95, 115, 150, 1),
-                                  child: Icon(
-                                    Icons.flag,
-                                    color: Colors.white,
-                                    size: 60,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(
-                                              "Place :",
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            SizedBox(
-                                              width: 7,
-                                            ),
-                                            Text(
-                                              destination.name,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(
-                                              "Country :",
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            SizedBox(
-                                              width: 7,
-                                            ),
-                                            Text(
-                                              destination.country,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(
-                                              "Distance :",
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            SizedBox(
-                                              width: 7,
-                                            ),
-                                            Text(
-                                              getDistance(
-                                                ref,
-                                                latitude: destination.latitude,
-                                                longitude:
-                                                    destination.longitude,
-                                              ),
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            )),
+                      borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(10),
+                        bottomLeft: Radius.circular(10),
+                      ),
+                      child: CachedImage(
+                        width: double.infinity,
+                        height: 280,
+                        imageUrl: destination.imageUrl,
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        bottom: 15.0, top: 8, left: 15, right: 15),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: Card(
-                        color: Color.fromRGBO(55, 70, 105, 1),
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                                color: Color.fromRGBO(95, 115, 150, 1),
-                                height: 30,
-                                width: double.infinity,
-                                child: Center(
-                                  child: Text(
-                                    "Description",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  ),
-                                )),
-                            SizedBox(
-                              height: 1,
+                  Maps(
+                    latitude: destination.latitude,
+                    longitude: destination.longitude,
+                    currentLocation: currentLocation,
+                  ),
+                  Container(
+                    color: Color.fromRGBO(55, 70, 105, 1),
+                    child: Table(
+                      columnWidths: {
+                        0: FlexColumnWidth(1),
+                        1: FlexColumnWidth(4),
+                      },
+                      children: [
+                        TableRow(children: [
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.fill,
+                            child: Container(
+                              width: 70,
+                              color: Color.fromRGBO(95, 115, 150, 1),
+                              child: Icon(
+                                Icons.flag,
+                                color: Colors.white,
+                                size: 60,
+                              ),
                             ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 5.0, vertical: 5.0),
-                              color: Color.fromRGBO(55, 70, 105, 1),
-                              child: secondHalf.isEmpty
-                                  ? new Text(firstHalf)
-                                  : new Column(
-                                      children: <Widget>[
-                                        new Text(
-                                          flag
-                                              ? (firstHalf + "...")
-                                              : (firstHalf + secondHalf),
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15),
-                                        ),
-                                        new InkWell(
-                                          child: new Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              new Text(
-                                                flag
-                                                    ? "show more"
-                                                    : "show less",
-                                                style: new TextStyle(
-                                                    color: Colors.blue,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                          onTap: () {
-                                            setState(() {
-                                              flag = !flag;
-                                            });
-                                          },
-                                        ),
-                                      ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 10,
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: <Widget>[
+                                    Text(
+                                      "Ratings:",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
                                     ),
+                                    SizedBox(
+                                      width: 7,
+                                    ),
+                                    RatingBar.builder(
+                                      ignoreGestures: true,
+                                      initialRating: destination.avgReviews,
+                                      minRating: 0,
+                                      maxRating: 5,
+                                      direction: Axis.horizontal,
+                                      itemSize: 25,
+                                      allowHalfRating: true,
+                                      itemCount: 5,
+                                      itemPadding: EdgeInsets.symmetric(
+                                        horizontal: 0.0,
+                                      ),
+                                      itemBuilder: (context, _) => Icon(
+                                        Icons.star,
+                                        color: Colors.amber,
+                                      ),
+                                      onRatingUpdate: (rating) {},
+                                    ),
+                                    SizedBox(
+                                      width: 7,
+                                    ),
+                                    Text(
+                                      '(${destination.reviews.length} reviews)',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            color: Colors.white,
+                                          ),
+                                    ),
+                                    SizedBox(
+                                      width: 7,
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    Text(
+                                      "Place :",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(
+                                      width: 7,
+                                    ),
+                                    Text(
+                                      destination.name,
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    Text(
+                                      "Country :",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(
+                                      width: 7,
+                                    ),
+                                    Text(
+                                      destination.country,
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    Text(
+                                      "Distance :",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(
+                                      width: 7,
+                                    ),
+                                    Text(
+                                      getDistance(
+                                        ref,
+                                        latitude: destination.latitude,
+                                        longitude: destination.longitude,
+                                      ),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
+                          ),
+                        ])
+                      ],
                     ),
+                  ),
+                  Description(
+                    description: destination.description,
+                  ),
+                  Reviews(
+                    destId: destination.id,
+                    reviews: destination.reviews,
                   ),
                 ],
               ),
             ),
-          ],
+          ),
+        );
+      },
+      error: (_, __) => Text("Error"),
+      initializing: (_) => SizedBox.shrink(),
+    );
+  }
+}
+
+class Description extends ConsumerStatefulWidget {
+  const Description({
+    Key? key,
+    required this.description,
+  });
+
+  final String description;
+
+  _DescriptionState createState() => _DescriptionState();
+}
+
+class _DescriptionState extends ConsumerState<Description> {
+  final _showMoreProvider = StateProvider<bool>((ref) => false);
+
+  @override
+  Widget build(BuildContext context) {
+    final showMore = ref.watch(_showMoreProvider);
+    return Column(
+      children: <Widget>[
+        Container(
+            color: Color.fromRGBO(95, 115, 150, 1),
+            height: 30,
+            width: double.infinity,
+            child: Center(
+              child: Text(
+                "Description",
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+            )),
+        SizedBox(
+          height: 1,
         ),
-      ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+          color: Color.fromRGBO(55, 70, 105, 1),
+          child: new Column(
+            children: <Widget>[
+              Text(
+                widget.description,
+                maxLines: showMore ? 500 : 3,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                ),
+              ),
+              Center(
+                child: InkWell(
+                  child: Text(
+                    showMore ? "show less" : "show more",
+                    style: TextStyle(
+                        color: Colors.blue, fontWeight: FontWeight.bold),
+                  ),
+                  onTap: () {
+                    ref.read(_showMoreProvider.notifier).state = !showMore;
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

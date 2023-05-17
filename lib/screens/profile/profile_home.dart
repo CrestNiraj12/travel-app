@@ -141,7 +141,8 @@ class _ProfileHomeState extends ConsumerState<ProfileHome> {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => DestinationScreen(
-                                      destination: destination),
+                                    destinationId: destination.id,
+                                  ),
                                 ),
                               );
                             },

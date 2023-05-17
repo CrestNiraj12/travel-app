@@ -131,8 +131,9 @@ class HomeBody extends ConsumerWidget {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) =>
-                              DestinationScreen(destination: destination),
+                          builder: (context) => DestinationScreen(
+                            destinationId: destination.id,
+                          ),
                         ),
                       );
                     },

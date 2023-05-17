@@ -1,3 +1,5 @@
+import 'package:traveller/models/review.dart';
+
 class Destination {
   final int id;
   final String name;
@@ -6,6 +8,8 @@ class Destination {
   final String description;
   final double latitude;
   final double longitude;
+  final double avgReviews;
+  final List<Review> reviews;
 
   Destination({
     required this.id,
@@ -15,6 +19,8 @@ class Destination {
     required this.description,
     required this.latitude,
     required this.longitude,
+    this.avgReviews = 0,
+    this.reviews = const [],
   });
 
   Destination.fromJson(Map<String, dynamic> json)
@@ -24,5 +30,9 @@ class Destination {
         imageUrl = json['imageUrl'],
         description = json['description'],
         latitude = double.parse(json['latitude']),
-        longitude = double.parse(json['longitude']);
+        longitude = double.parse(json['longitude']),
+        avgReviews = double.parse(json['avg_reviews'].toString()),
+        reviews = List.from(json['reviews'])
+            .map((review) => Review.fromJson(review as Map<String, dynamic>))
+            .toList();
 }
