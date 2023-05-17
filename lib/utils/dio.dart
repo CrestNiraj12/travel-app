@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:traveller/config.dart';
 import 'package:traveller/states/auth/auth.provider.dart';
 
 class HttpClient {
-  HttpClient(this.ref, {String baseURL = "http://10.0.2.2:8000/api"}) {
+  HttpClient(this.ref, {String baseURL = Config.baseUrl}) {
     _init(baseURL);
   }
 

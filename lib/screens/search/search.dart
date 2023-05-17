@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:traveller/components/image.dart';
+import 'package:traveller/models/destination.dart';
 import 'package:traveller/screens/destination/destination_screen.dart';
 import 'package:traveller/states/current_location/current_location.provider.dart';
 import 'package:traveller/states/destination/destination_list.provider.dart';
 import 'package:traveller/states/list_query/list_loading.state.dart';
 import 'package:traveller/utils/distance.dart';
-
-TextEditingController searchController = TextEditingController();
 
 class Search extends ConsumerStatefulWidget {
   const Search({Key? key});
@@ -17,30 +16,33 @@ class Search extends ConsumerStatefulWidget {
 
 class _SearchState extends ConsumerState<Search>
     with AutomaticKeepAliveClientMixin {
+  final searchController = TextEditingController();
   final isSearchedProvider = StateProvider<bool>((ref) => false);
+  final searchQueryProvider = StateProvider<String>((ref) => '');
 
   void _handleSearch() async {
     ref.read(isSearchedProvider.notifier).state = true;
-    ref.read(searchedDestinationListProvider.notifier).refetchAll();
+    ref.read(searchQueryProvider.notifier).state = searchController.text;
   }
 
   void _handleCancelSearch() async {
     ref.read(isSearchedProvider.notifier).state = false;
     searchController.clear();
+    ref.read(searchQueryProvider.notifier).state = '';
   }
 
   @override
   Scaffold build(BuildContext context) {
     super.build(context);
     ref.watch(currentLocationProvider);
-    final destinations = ref.watch(destinationListProvider);
-    final searchedDestinations = ref.watch(searchedDestinationListProvider);
+    final query = ref.watch(searchQueryProvider);
     final isSearched = ref.watch(isSearchedProvider);
+    final destinations = ref.watch(destinationListProvider(query));
 
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
-          ref.read(destinationListProvider.notifier).initialize();
+          ref.read(searchQueryProvider.notifier).state = '';
         },
         child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
@@ -52,10 +54,7 @@ class _SearchState extends ConsumerState<Search>
                 isSearched: isSearched,
                 handleCancelSearch: _handleCancelSearch,
               ),
-              if (isSearched)
-                DestinationItem(destinations: searchedDestinations)
-              else
-                DestinationItem(destinations: destinations),
+              DestinationItem(destinations: destinations),
             ],
           ),
         ),
@@ -131,7 +130,7 @@ class DestinationItem extends ConsumerWidget {
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           children: [
-            for (final destination in destinations.allData)
+            for (final Destination destination in destinations.allData)
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
@@ -180,7 +179,11 @@ class DestinationItem extends ConsumerWidget {
                                     ),
                                     Container(height: 5),
                                     Text(
-                                      getDistance(ref, destination.location),
+                                      getDistance(
+                                        ref,
+                                        latitude: destination.latitude,
+                                        longitude: destination.longitude,
+                                      ),
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall

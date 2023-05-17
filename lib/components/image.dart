@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:traveller/config.dart';
 
 class CachedImage extends StatelessWidget {
   const CachedImage({
@@ -18,7 +19,7 @@ class CachedImage extends StatelessWidget {
       height: 100,
       width: 100,
       fit: BoxFit.cover,
-      imageUrl: imageUrl,
+      imageUrl: "${Config.host}/storage/images/$imageUrl",
       progressIndicatorBuilder: (context, url, downloadProgress) => Center(
         child: SizedBox(
           height: 50,

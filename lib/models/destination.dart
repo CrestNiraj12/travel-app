@@ -1,12 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Destination {
-  final String id;
+  final int id;
   final String name;
   final String country;
   final String imageUrl;
   final String description;
-  final GeoPoint location;
+  final double latitude;
+  final double longitude;
 
   Destination({
     required this.id,
@@ -14,14 +13,16 @@ class Destination {
     required this.country,
     required this.imageUrl,
     required this.description,
-    required this.location,
+    required this.latitude,
+    required this.longitude,
   });
 
   Destination.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         name = json['name'],
         country = json['country'],
-        imageUrl = json['image_url'],
+        imageUrl = json['imageUrl'],
         description = json['description'],
-        location = json['location'];
+        latitude = double.parse(json['latitude']),
+        longitude = double.parse(json['longitude']);
 }

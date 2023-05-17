@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:traveller/states/current_location/current_location.provider.dart';
 
@@ -12,7 +11,11 @@ double calculateDistance(lat1, lon1, lat2, lon2) {
   return 12742 * asin(sqrt(a));
 }
 
-String getDistance(WidgetRef ref, GeoPoint destination) {
+String getDistance(
+  WidgetRef ref, {
+  required double latitude,
+  required double longitude,
+}) {
   final pos = ref.read(currentLocationProvider).data;
 
   if (pos == null) return 'distance unavailable';
@@ -20,8 +23,8 @@ String getDistance(WidgetRef ref, GeoPoint destination) {
   return calculateDistance(
         pos.latitude,
         pos.longitude,
-        destination.latitude,
-        destination.longitude,
+        latitude,
+        longitude,
       ).toStringAsFixed(2) +
       ' km/s away';
 }

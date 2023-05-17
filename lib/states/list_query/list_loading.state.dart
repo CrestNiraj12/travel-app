@@ -28,7 +28,7 @@ class ListLoadingState<T> with _$ListLoadingState<T> {
       if (isLoading)
         loading
       else if (this.error.isNotEmpty)
-        error ?? Text('Error occurred')
+        error ?? Text('Error occured', style: TextStyle(color: Colors.red))
       else if (allData.isEmpty)
         empty ?? SizedBox.shrink()
       else if (allData.isNotEmpty)
@@ -47,7 +47,8 @@ class ListLoadingState<T> with _$ListLoadingState<T> {
       return loading;
     }
     if (this.error.isNotEmpty) {
-      return error ?? Text('Error occurred');
+      return error ??
+          Text('Error occurred', style: TextStyle(color: Colors.red));
     }
     if (allData.isEmpty) {
       return empty ?? SizedBox.shrink();

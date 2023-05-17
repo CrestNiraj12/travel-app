@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,14 +44,14 @@ class _DestinationScreenState extends ConsumerState<DestinationScreen> {
   }
 
   Future<List<PointLatLng>?> _getPolylinePoints(
-      Position? currentLocation, GeoPoint destination) async {
+      Position? currentLocation, double latitude, double longitude) async {
     PolylinePoints polylinePoints = PolylinePoints();
 
     if (currentLocation != null) {
       PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
         "AIzaSyAWevH32YxcDu0lHWiqvRMQTlWHkNHcZ4k",
         PointLatLng(currentLocation.latitude, currentLocation.longitude),
-        PointLatLng(destination.latitude, destination.longitude),
+        PointLatLng(latitude, longitude),
         travelMode: TravelMode.driving,
       );
       return result.points;
@@ -68,8 +67,8 @@ class _DestinationScreenState extends ConsumerState<DestinationScreen> {
     final currentLocation = ref.watch(currentLocationProvider).data;
     final destination = widget.destination;
     final _center = LatLng(
-      destination.location.latitude,
-      destination.location.longitude,
+      destination.latitude,
+      destination.longitude,
     );
 
     if (destination.description.length > 50) {
@@ -103,8 +102,11 @@ class _DestinationScreenState extends ConsumerState<DestinationScreen> {
               ),
             ),
             FutureBuilder<List<PointLatLng>?>(
-                future:
-                    _getPolylinePoints(currentLocation, destination.location),
+                future: _getPolylinePoints(
+                  currentLocation,
+                  destination.latitude,
+                  destination.longitude,
+                ),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Padding(
@@ -177,8 +179,8 @@ class _DestinationScreenState extends ConsumerState<DestinationScreen> {
                         Marker(
                           markerId: const MarkerId('destination'),
                           position: LatLng(
-                            destination.location.latitude,
-                            destination.location.longitude,
+                            destination.latitude,
+                            destination.longitude,
                           ),
                         ),
                         if (currentLocation != null)
@@ -285,7 +287,11 @@ class _DestinationScreenState extends ConsumerState<DestinationScreen> {
                                             ),
                                             Text(
                                               getDistance(
-                                                  ref, destination.location),
+                                                ref,
+                                                latitude: destination.latitude,
+                                                longitude:
+                                                    destination.longitude,
+                                              ),
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 15),
