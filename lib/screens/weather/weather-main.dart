@@ -43,6 +43,12 @@ class _WeatherState extends State<Weather>
   }
 
   @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(

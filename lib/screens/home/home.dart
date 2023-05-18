@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:traveller/screens/home/home_body.dart';
 
 class Home extends StatefulWidget {
-  const Home({
-    Key? key,
-  }) : super();
+  const Home({Key? key}) : super();
 
   _HomeState createState() => _HomeState();
 }

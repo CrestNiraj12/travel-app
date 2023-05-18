@@ -1,8 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:traveller/components/loader.dart';
 import 'package:traveller/constants/constant.dart';
+import 'package:traveller/screens/profile/forgot_password.dart';
 import 'package:traveller/states/auth/auth.provider.dart';
 
 final passwordValidator = MultiValidator([
@@ -33,6 +35,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
   void hidePassword(bool hide) {
     ref.read(_hidePasswordState.notifier).state = !hide;
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -116,6 +125,34 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                               keyboardType: TextInputType.emailAddress,
                             ),
                             SizedBox(
+                              height: 5,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                RichText(
+                                  text: TextSpan(
+                                    text: 'Forgot Password?',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: Colors.blueAccent,
+                                        ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => ForgotPassword(),
+                                          ),
+                                        );
+                                      },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
                               height: 20,
                             ),
                             TextButton(
@@ -143,8 +180,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                                   await ref
                                       .read(authProvider.notifier)
                                       .loginUser(
-                                        email: _emailController.text,
-                                        password: _passwordController.text,
+                                        email: _emailController.text.trim(),
+                                        password:
+                                            _passwordController.text.trim(),
                                       );
                                 }
                                 if (mounted) {

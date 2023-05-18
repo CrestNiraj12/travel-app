@@ -20,9 +20,15 @@ class _SearchState extends ConsumerState<Search>
   final isSearchedProvider = StateProvider<bool>((ref) => false);
   final searchQueryProvider = StateProvider<String>((ref) => '');
 
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
   void _handleSearch() async {
     ref.read(isSearchedProvider.notifier).state = true;
-    ref.read(searchQueryProvider.notifier).state = searchController.text;
+    ref.read(searchQueryProvider.notifier).state = searchController.text.trim();
   }
 
   void _handleCancelSearch() async {

@@ -54,7 +54,7 @@ class _ProfileHomeState extends ConsumerState<ProfileHome> {
                         SizedBox(width: 15.0),
                         CircleAvatar(
                           radius: 60.0,
-                          backgroundColor: Colors.red,
+                          backgroundColor: Colors.grey,
                           backgroundImage: NetworkImage(widget.user.avatar),
                         ),
                         SizedBox(

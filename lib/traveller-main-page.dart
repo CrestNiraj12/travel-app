@@ -5,7 +5,7 @@ import 'package:traveller/constants/constant.dart';
 import 'package:traveller/screens/Profile/profile.dart';
 import 'package:traveller/screens/search/search.dart';
 import 'package:traveller/states/auth_redirection/auth_redirection.provider.dart';
-import 'package:traveller/states/bottom_nav.provider.dart';
+import 'package:traveller/states/page_controller.provider.dart';
 
 import 'screens/home/home.dart';
 import 'screens/weather/weather-main.dart';
@@ -13,7 +13,10 @@ import 'screens/weather/weather-main.dart';
 class Traveller extends ConsumerStatefulWidget {
   const Traveller({
     Key? key,
+    this.screen = Screens.home,
   });
+
+  final int screen;
 
   @override
   ConsumerState<Traveller> createState() => _TravellerState();
@@ -21,7 +24,7 @@ class Traveller extends ConsumerStatefulWidget {
 
 class _TravellerState extends ConsumerState<Traveller> {
   void onPageChanged(int index) {
-    ref.read(bottomNavProvider.notifier).state = index;
+    ref.read(pageControllerProvider.notifier).state.jumpToPage(index);
   }
 
   final pages = [
@@ -34,7 +37,16 @@ class _TravellerState extends ConsumerState<Traveller> {
   @override
   void initState() {
     super.initState();
+
     _requestLocationPermission();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.screen != Screens.home)
+        ref
+            .read(pageControllerProvider.notifier)
+            .state
+            .jumpToPage(widget.screen);
+    });
   }
 
   void _requestLocationPermission() async {
@@ -84,7 +96,7 @@ class _TravellerState extends ConsumerState<Traveller> {
     Widget _getNavButton(String text, IconData icon, int index) {
       return InkWell(
         onTap: () {
-          pageController.jumpToPage(index);
+          ref.read(pageControllerProvider.notifier).state.jumpToPage(index);
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -113,7 +125,7 @@ class _TravellerState extends ConsumerState<Traveller> {
 
     return Scaffold(
       body: PageView(
-        controller: pageController,
+        controller: ref.read(pageControllerProvider.notifier).state,
         onPageChanged: onPageChanged,
         children: pages,
         physics: NeverScrollableScrollPhysics(),
@@ -126,7 +138,10 @@ class _TravellerState extends ConsumerState<Traveller> {
         child: FloatingActionButton(
           backgroundColor: Colors.blueAccent,
           onPressed: () {
-            pageController.jumpToPage(0);
+            ref
+                .read(pageControllerProvider.notifier)
+                .state
+                .jumpToPage(Screens.home);
           },
           child: new Icon(Icons.home),
         ),

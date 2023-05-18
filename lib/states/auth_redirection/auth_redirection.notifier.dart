@@ -5,7 +5,7 @@ import 'package:traveller/components/snackbar.dart';
 import 'package:traveller/constants/constant.dart';
 import 'package:traveller/states/auth/auth.provider.dart';
 import 'package:traveller/states/auth/auth.state.dart';
-import 'package:traveller/states/bottom_nav.provider.dart';
+import 'package:traveller/states/page_controller.provider.dart';
 
 import 'navigation_flow.state.dart';
 
@@ -63,8 +63,7 @@ class AuthRedirectionNotifier extends StateNotifier<NavigationFlowState> {
           type: SnackbarType.success,
         ),
       );
-      pageController.jumpToPage(Screens.home);
-      ref.read(bottomNavProvider.notifier).state = Screens.home;
+      ref.read(pageControllerProvider.notifier).state.jumpToPage(Screens.home);
     }
   }
 

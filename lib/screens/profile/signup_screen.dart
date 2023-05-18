@@ -7,9 +7,8 @@ import 'package:traveller/states/auth/auth.provider.dart';
 
 final passwordValidator = MultiValidator([
   RequiredValidator(errorText: 'Password is required'),
-  MinLengthValidator(8, errorText: 'Password must be at least 8 digits long'),
-  PatternValidator(r'(?=.*?[#?!@$%^&*-])',
-      errorText: 'Passwords must have at least one special character')
+  MinLengthValidator(8,
+      errorText: 'Password must be at least 8 characters long'),
 ]);
 
 final emailValidator = MultiValidator([
@@ -33,16 +32,26 @@ class Registration extends ConsumerStatefulWidget {
 
 class _RegistrationState extends ConsumerState<Registration> {
   final _formKey = GlobalKey<FormState>();
-  bool _hidePassword = true;
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _loadingState = StateProvider<bool>((ref) => false);
+  final _hidePasswordProvider = StateProvider<bool>((ref) => false);
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(_loadingState);
+    final hide = ref.watch(_hidePasswordProvider);
 
     return SafeArea(
       child: Container(
@@ -115,33 +124,25 @@ class _RegistrationState extends ConsumerState<Registration> {
                             ),
                             TextFormField(
                               controller: _passwordController,
-                              obscureText: _hidePassword,
+                              obscureText: hide,
                               decoration: textInputDecoration.copyWith(
-                                  hintText: "Password",
-                                  prefixIcon: Icon(
-                                    Icons.lock,
+                                hintText: "Password",
+                                prefixIcon: Icon(
+                                  Icons.lock,
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    hide
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
                                   ),
-                                  suffixIcon: _hidePassword
-                                      ? IconButton(
-                                          icon: Icon(
-                                            Icons.visibility,
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              _hidePassword = !_hidePassword;
-                                            });
-                                          },
-                                        )
-                                      : IconButton(
-                                          icon: Icon(
-                                            Icons.visibility_off,
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              _hidePassword = !_hidePassword;
-                                            });
-                                          },
-                                        )),
+                                  onPressed: () {
+                                    ref
+                                        .read(_hidePasswordProvider.notifier)
+                                        .state = !hide;
+                                  },
+                                ),
+                              ),
                               validator: passwordValidator,
                               keyboardType: TextInputType.emailAddress,
                             ),
@@ -150,33 +151,25 @@ class _RegistrationState extends ConsumerState<Registration> {
                             ),
                             TextFormField(
                               controller: _confirmPasswordController,
-                              obscureText: _hidePassword,
+                              obscureText: hide,
                               decoration: textInputDecoration.copyWith(
-                                  hintText: "Confirm Password",
-                                  prefixIcon: Icon(
-                                    Icons.lock,
+                                hintText: "Confirm Password",
+                                prefixIcon: Icon(
+                                  Icons.lock,
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    hide
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
                                   ),
-                                  suffixIcon: _hidePassword
-                                      ? IconButton(
-                                          icon: Icon(
-                                            Icons.visibility,
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              _hidePassword = !_hidePassword;
-                                            });
-                                          },
-                                        )
-                                      : IconButton(
-                                          icon: Icon(
-                                            Icons.visibility_off,
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              _hidePassword = !_hidePassword;
-                                            });
-                                          },
-                                        )),
+                                  onPressed: () {
+                                    ref
+                                        .read(_hidePasswordProvider.notifier)
+                                        .state = !hide;
+                                  },
+                                ),
+                              ),
                               validator: (String? value) {
                                 if (value?.isEmpty ?? true)
                                   return 'Confirm password is required';
@@ -211,18 +204,18 @@ class _RegistrationState extends ConsumerState<Registration> {
                                 if (_formKey.currentState?.validate() ??
                                     false) {
                                   await ref.read(authProvider.notifier).signUp(
-                                        email: _emailController.text,
-                                        password: _passwordController.text,
-                                        name: _nameController.text,
+                                        email: _emailController.text.trim(),
+                                        password:
+                                            _passwordController.text.trim(),
+                                        name: _nameController.text.trim(),
                                         passwordConfirmation:
-                                            _confirmPasswordController.text,
+                                            _confirmPasswordController.text
+                                                .trim(),
                                       );
                                 }
                                 if (mounted) {
-                                  setState(() {
-                                    ref.read(_loadingState.notifier).state =
-                                        false;
-                                  });
+                                  ref.read(_loadingState.notifier).state =
+                                      false;
                                 }
                               },
                             ),

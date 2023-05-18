@@ -10,11 +10,14 @@ abstract class BaseAuthService {
   Future<String?> signUpWithEmail({
     required Map<String, dynamic> creds,
   });
-
   Future<User> getUser();
-
   Future<void> signOut();
   Future<void> forgetPassword({required String email});
+  Future<void> verifyEmail({
+    required String email,
+    required String code,
+  });
+  Future<void> changePassword(Map<String, dynamic> data);
 }
 
 final Provider<AuthService> authServiceProvider = Provider<AuthService>(
@@ -65,8 +68,28 @@ class AuthService extends BaseAuthService {
   }
 
   @override
-  Future<void> forgetPassword({required String email}) {
-    // TODO: implement forgetPassword
-    throw UnimplementedError();
+  Future<void> forgetPassword({required String email}) async {
+    await ref.read(httpClientProvider).post('/forgot-password', data: {
+      'email': email,
+    });
+  }
+
+  @override
+  Future<void> verifyEmail({
+    required String email,
+    required String code,
+  }) async {
+    await ref.read(httpClientProvider).post('/reset-password/verify', data: {
+      'email': email,
+      'token': code,
+    });
+  }
+
+  @override
+  Future<void> changePassword(Map<String, dynamic> data) async {
+    await ref.read(httpClientProvider).post(
+          '/reset-password',
+          data: data,
+        );
   }
 }

@@ -24,6 +24,12 @@ class _ReviewFormState extends ConsumerState<ReviewForm> {
   final _ratingProvider = StateProvider<double>((ref) => 0);
   final _loadingProvider = StateProvider<bool>((ref) => false);
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   Future<void> _handleSubmit(double ratings) async {
     if (ratings <= 0) {
       globalScaffoldKey.currentState?.showSnackBar(
@@ -40,7 +46,7 @@ class _ReviewFormState extends ConsumerState<ReviewForm> {
 
     final data = {
       'ratings': ratings,
-      'comment': _controller.text,
+      'comment': _controller.text.trim(),
       'dest_id': widget.destId,
     };
     try {

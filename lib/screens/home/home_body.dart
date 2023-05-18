@@ -6,8 +6,8 @@ import 'package:traveller/components/image.dart';
 import 'package:traveller/constants/constant.dart';
 import 'package:traveller/recommendation/recommendation.dart';
 import 'package:traveller/screens/destination/destination_screen.dart';
-import 'package:traveller/states/bottom_nav.provider.dart';
 import 'package:traveller/states/destination/destination_list.provider.dart';
+import 'package:traveller/states/page_controller.provider.dart';
 
 class HomeBody extends ConsumerWidget {
   @override
@@ -41,7 +41,10 @@ class HomeBody extends ConsumerWidget {
                 Expanded(
                   child: InkWell(
                       onTap: () {
-                        pageController.jumpToPage(Screens.search);
+                        ref
+                            .read(pageControllerProvider.notifier)
+                            .state
+                            .jumpToPage(Screens.search);
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -68,7 +71,10 @@ class HomeBody extends ConsumerWidget {
                 Expanded(
                   child: InkWell(
                       onTap: () {
-                        pageController.jumpToPage(Screens.weather);
+                        ref
+                            .read(pageControllerProvider.notifier)
+                            .state
+                            .jumpToPage(Screens.weather);
                       },
                       child: Column(
                         children: <Widget>[
