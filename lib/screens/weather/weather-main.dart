@@ -87,12 +87,12 @@ class _WeatherState extends State<Weather>
             )
           ],
         ),
-        backgroundColor: AppColors.primary,
+        backgroundColor: Colors.white,
         body: Material(
           child: Container(
               constraints: BoxConstraints.expand(),
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                color: Colors.white,
               ),
               child: ListView(
                 children: <Widget>[

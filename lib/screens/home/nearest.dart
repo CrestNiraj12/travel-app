@@ -3,9 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:traveller/components/image.dart';
 import 'package:traveller/screens/destination/destination_screen.dart';
 import 'package:traveller/states/destination/destination_list.provider.dart';
+import 'package:traveller/utils/colors.dart';
 import 'package:traveller/utils/distance.dart';
 
 class NearestPlaces extends ConsumerWidget {
@@ -24,9 +26,10 @@ class NearestPlaces extends ConsumerWidget {
           padding: EdgeInsets.only(top: 5, left: 8),
           child: Text(
             "Nearest Places",
-            style: TextStyle(
+            style: GoogleFonts.lato(
               fontWeight: FontWeight.bold,
-              fontSize: 25,
+              fontSize: 18,
+              color: AppColors.dark,
             ),
           ),
         ),
@@ -91,9 +94,8 @@ class NearestPlaces extends ConsumerWidget {
                               children: [
                                 Text(
                                   '${destination.name}',
-                                  style: TextStyle(
+                                  style: GoogleFonts.lato(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.black,
                                     fontSize: 16,
                                   ),
                                 ),
@@ -107,8 +109,7 @@ class NearestPlaces extends ConsumerWidget {
                                     longitude: destination.longitude,
                                   ),
                                   style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
+                                    color: AppColors.green,
                                     fontSize: 10,
                                   ),
                                 ),
@@ -143,9 +144,8 @@ class NearestPlaces extends ConsumerWidget {
                                     Text(
                                       '(${destination.reviews.length})',
                                       style: TextStyle(
-                                        fontWeight: FontWeight.bold,
                                         color: Colors.black,
-                                        fontSize: 14,
+                                        fontSize: 12,
                                       ),
                                     ),
                                   ],

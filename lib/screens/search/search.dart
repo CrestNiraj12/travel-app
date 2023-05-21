@@ -191,12 +191,11 @@ class DestinationItem extends ConsumerWidget {
                                   destination.name,
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 2,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleLarge
-                                      ?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  style: GoogleFonts.lato(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.dark,
+                                  ),
                                 ),
                                 SizedBox(height: 10),
                                 Text(
@@ -209,7 +208,7 @@ class DestinationItem extends ConsumerWidget {
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                        color: Colors.grey[500],
+                                        color: AppColors.green,
                                       ),
                                 ),
                                 SizedBox(height: 10),
@@ -221,6 +220,7 @@ class DestinationItem extends ConsumerWidget {
                                         .textTheme
                                         .titleSmall
                                         ?.copyWith(
+                                          height: 1.3,
                                           fontSize: 12,
                                           fontWeight: FontWeight.normal,
                                           color: Colors.grey[700],
@@ -273,6 +273,7 @@ class SearchForm extends StatelessWidget {
             style: GoogleFonts.lato(
               fontSize: 30,
               fontWeight: FontWeight.bold,
+              color: AppColors.dark,
             ),
           ),
           Text(
@@ -280,6 +281,7 @@ class SearchForm extends StatelessWidget {
             style: GoogleFonts.lato(
               fontSize: 30,
               fontWeight: FontWeight.w900,
+              color: AppColors.dark,
             ),
           ),
           SizedBox(
@@ -292,7 +294,7 @@ class SearchForm extends StatelessWidget {
             decoration: InputDecoration(
               isDense: true,
               filled: true,
-              fillColor: AppColors.primary.withOpacity(0.7),
+              fillColor: AppColors.primary,
               border: OutlineInputBorder(
                 borderSide: BorderSide(
                   width: 1,

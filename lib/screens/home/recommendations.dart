@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:traveller/components/image.dart';
 import 'package:traveller/screens/destination/destination_screen.dart';
 import 'package:traveller/states/destination/recommendation.provider.dart';
@@ -42,11 +43,11 @@ class Recommendations extends ConsumerWidget {
                 Padding(
                   padding: EdgeInsets.only(top: 5, left: 8),
                   child: Text(
-                    "Recommendations",
-                    style: TextStyle(
+                    "Recommendations for you",
+                    style: GoogleFonts.lato(
                       fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      color: Colors.black,
+                      fontSize: 18,
+                      color: AppColors.dark,
                     ),
                   ),
                 ),

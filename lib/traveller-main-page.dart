@@ -6,6 +6,7 @@ import 'package:traveller/screens/Profile/profile.dart';
 import 'package:traveller/screens/search/search.dart';
 import 'package:traveller/states/auth_redirection/auth_redirection.provider.dart';
 import 'package:traveller/states/page_controller.provider.dart';
+import 'package:traveller/utils/colors.dart';
 
 import 'screens/home/home.dart';
 import 'screens/weather/weather-main.dart';
@@ -100,70 +101,54 @@ class _TravellerState extends ConsumerState<Traveller> {
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                color: Colors.white,
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Text(
-                text,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                ),
-              ),
-            ],
+          child: Icon(
+            icon,
+            color: Colors.white,
           ),
         ),
       );
     }
 
     return Scaffold(
+      extendBody: true,
       body: PageView(
         controller: ref.read(pageControllerProvider.notifier).state,
         onPageChanged: onPageChanged,
         children: pages,
         physics: NeverScrollableScrollPhysics(),
       ),
-      extendBody: true,
-      floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
-      floatingActionButton: Container(
-        width: 70,
-        height: 70,
-        child: FloatingActionButton(
-          backgroundColor: Colors.blueAccent,
-          onPressed: () {
-            ref
-                .read(pageControllerProvider.notifier)
-                .state
-                .jumpToPage(Screens.home);
-          },
-          child: new Icon(Icons.home),
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        height: 80,
-        color: Colors.blueAccent,
-        shape: CircularNotchedRectangle(),
-        notchMargin: 5,
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 100,
-            right: 20,
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: AppColors.blue.withOpacity(0.9),
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(30),
+            topLeft: Radius.circular(30),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              _getNavButton('Search', Icons.search, Screens.search),
-              _getNavButton('Weather', Icons.wb_sunny, Screens.weather),
-              _getNavButton('Profile', Icons.person, Screens.profile),
-            ],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black38,
+              spreadRadius: 0,
+              blurRadius: 3,
+            ),
+          ],
+        ),
+        child: BottomAppBar(
+          height: 60,
+          color: Colors.transparent,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                _getNavButton('Home', Icons.home, Screens.home),
+                _getNavButton('Search', Icons.search, Screens.search),
+                _getNavButton('Weather', Icons.wb_sunny, Screens.weather),
+                _getNavButton('Profile', Icons.person, Screens.profile),
+              ],
+            ),
           ),
         ),
       ),

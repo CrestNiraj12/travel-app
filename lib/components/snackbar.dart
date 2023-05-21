@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:traveller/utils/colors.dart';
 
 enum SnackbarType {
   success,
@@ -16,14 +17,14 @@ SnackBar showSnackBar({
       color = Colors.red[300] ?? Colors.red;
       break;
     case SnackbarType.info:
-      color = Colors.blue[300] ?? Colors.blue;
+      color = AppColors.blue;
       break;
     default:
-      color = Colors.green[600] ?? Colors.green;
+      color = AppColors.green;
   }
   return SnackBar(
     content: Text(content),
     backgroundColor: color,
-    behavior: SnackBarBehavior.fixed,
+    behavior: SnackBarBehavior.floating,
   );
 }

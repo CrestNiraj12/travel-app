@@ -26,7 +26,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
               title: Text(
                 "Traveller",
                 style: GoogleFonts.pacifico(
-                  fontSize: 18,
+                  fontSize: 30,
                   color: AppColors.blue,
                 ),
               ),

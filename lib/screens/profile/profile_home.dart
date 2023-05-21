@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:traveller/components/image.dart';
 import 'package:traveller/components/loader.dart';
 import 'package:traveller/models/destination.dart';
@@ -43,7 +44,7 @@ class _ProfileHomeState extends ConsumerState<ProfileHome> {
             Container(
               height: 325.0,
               width: double.infinity,
-              color: Colors.lightBlue,
+              color: AppColors.primary,
               padding: EdgeInsets.only(top: 50),
               child: Column(
                 children: <Widget>[
@@ -75,7 +76,7 @@ class _ProfileHomeState extends ConsumerState<ProfileHome> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16.0,
-                          color: Colors.grey[800],
+                          color: AppColors.dark,
                         ),
                       )
                     ],
@@ -114,114 +115,100 @@ class _ProfileHomeState extends ConsumerState<ProfileHome> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              color: AppColors.primary,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Previously viewed destinations:",
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                    ListView(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      children: [
-                        for (final Destination destination
-                            in destinations.allData)
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => DestinationScreen(
-                                    destinationId: destination.id,
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 40,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Previously viewed destinations:",
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  ListView(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      for (final Destination destination
+                          in destinations.allData)
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => DestinationScreen(
+                                  destinationId: destination.id,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      CachedImage(
+                                        imageUrl: destination.imageUrl,
+                                        height: 60,
+                                        width: 60,
+                                        radius: 20,
+                                      ),
+                                      Container(width: 20),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Container(height: 5),
+                                            Text(
+                                              destination.name,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              style: GoogleFonts.lato(
+                                                color: AppColors.green,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                            Container(height: 5),
+                                            Text(
+                                              getDistance(
+                                                ref,
+                                                latitude: destination.latitude,
+                                                longitude:
+                                                    destination.longitude,
+                                              ),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall
+                                                  ?.copyWith(
+                                                    color: Colors.grey[700],
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              );
-                            },
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(15),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        CachedImage(
-                                          imageUrl: destination.imageUrl,
-                                        ),
-                                        Container(width: 20),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Container(height: 5),
-                                              Text(
-                                                destination.name,
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleLarge,
-                                              ),
-                                              Container(height: 5),
-                                              Text(
-                                                getDistance(
-                                                  ref,
-                                                  latitude:
-                                                      destination.latitude,
-                                                  longitude:
-                                                      destination.longitude,
-                                                ),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodySmall
-                                                    ?.copyWith(
-                                                      color: Colors.grey[700],
-                                                    ),
-                                              ),
-                                              Container(height: 10),
-                                              Text(
-                                                destination.description,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleMedium
-                                                    ?.copyWith(
-                                                      color: Colors.grey[700],
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              ],
                             ),
                           ),
-                      ],
-                    )
-                  ],
-                ),
+                        ),
+                    ],
+                  )
+                ],
               ),
             ),
           ],
