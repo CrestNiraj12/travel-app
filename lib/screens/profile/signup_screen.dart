@@ -77,7 +77,7 @@ class _RegistrationState extends ConsumerState<Registration> {
                     bottom: 50,
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30.0),
+                    borderRadius: BorderRadius.circular(15.0),
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 30),
                       decoration: BoxDecoration(

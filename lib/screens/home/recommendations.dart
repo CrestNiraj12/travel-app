@@ -143,7 +143,7 @@ class Recommendations extends ConsumerWidget {
                                           height: 10,
                                         ),
                                         SizedBox(
-                                          width: 180,
+                                          width: 150,
                                           child: Text(
                                             '${destination.name}',
                                             style: TextStyle(

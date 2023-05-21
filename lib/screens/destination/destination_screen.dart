@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:traveller/components/image.dart';
 import 'package:traveller/screens/destination/google_maps.dart';
 import 'package:traveller/screens/destination/reviews.dart';
@@ -8,6 +9,7 @@ import 'package:traveller/services/history_service.dart';
 import 'package:traveller/states/auth_redirection/auth_redirection.provider.dart';
 import 'package:traveller/states/current_location/current_location.provider.dart';
 import 'package:traveller/states/destination/destination_list.provider.dart';
+import 'package:traveller/utils/colors.dart';
 import 'package:traveller/utils/distance.dart';
 
 class DestinationScreen extends ConsumerStatefulWidget {
@@ -22,6 +24,8 @@ class DestinationScreen extends ConsumerStatefulWidget {
 }
 
 class _DestinationScreenState extends ConsumerState<DestinationScreen> {
+  final visibilityProvider = StateProvider((ref) => true);
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +42,7 @@ class _DestinationScreenState extends ConsumerState<DestinationScreen> {
   Widget build(BuildContext context) {
     final currentLocation = ref.watch(currentLocationProvider).data;
     final destination = ref.watch(destinationProvider(widget.destinationId));
+    final isVisible = ref.watch(visibilityProvider);
 
     return destination.when(
       loading: () => Scaffold(
@@ -49,192 +54,176 @@ class _DestinationScreenState extends ConsumerState<DestinationScreen> {
         ),
       ),
       data: (destination) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(destination.name),
-          ),
-          body: RefreshIndicator(
-            onRefresh: () async {
-              ref
-                  .read(destinationProvider(widget.destinationId).notifier)
-                  .initialize();
-            },
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Container(
+        return WillPopScope(
+          onWillPop: () async {
+            ref.read(visibilityProvider.notifier).state = false;
+            return true;
+          },
+          child: Scaffold(
+            body: Stack(
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 400,
+                  child: CachedImage(
                     width: double.infinity,
-                    height: 220,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        bottomRight: Radius.circular(10),
-                        bottomLeft: Radius.circular(10),
-                      ),
-                      child: CachedImage(
-                        width: double.infinity,
-                        height: 280,
-                        imageUrl: destination.imageUrl,
-                      ),
-                    ),
+                    height: 400,
+                    radius: 0,
+                    imageUrl: destination.imageUrl,
+                    color: Colors.black45,
+                    colorBlendMode: BlendMode.colorBurn,
                   ),
-                  Maps(
-                    latitude: destination.latitude,
-                    longitude: destination.longitude,
-                    currentLocation: currentLocation,
-                  ),
-                  Container(
-                    color: Color.fromRGBO(55, 70, 105, 1),
-                    child: Table(
-                      columnWidths: {
-                        0: FlexColumnWidth(1),
-                        1: FlexColumnWidth(4),
-                      },
-                      children: [
-                        TableRow(children: [
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.fill,
-                            child: Container(
-                              width: 70,
-                              color: Color.fromRGBO(95, 115, 150, 1),
-                              child: Icon(
-                                Icons.flag,
-                                color: Colors.white,
-                                size: 60,
+                ),
+                NestedScrollView(
+                  headerSliverBuilder:
+                      (BuildContext context, bool innerBoxIsScrolled) {
+                    return [
+                      SliverAppBar(
+                        expandedHeight: 330.0,
+                        pinned: false,
+                        floating: true,
+                        backgroundColor: Colors.transparent,
+                        flexibleSpace: Stack(
+                          children: [
+                            Positioned(
+                              bottom: 30,
+                              left: 30,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: <Widget>[
+                                      RatingBar.builder(
+                                        ignoreGestures: true,
+                                        initialRating: destination.avgReviews,
+                                        minRating: 0,
+                                        maxRating: 5,
+                                        direction: Axis.horizontal,
+                                        itemSize: 25,
+                                        allowHalfRating: true,
+                                        itemCount: 5,
+                                        itemPadding: EdgeInsets.symmetric(
+                                          horizontal: 0.0,
+                                        ),
+                                        itemBuilder: (context, _) => Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
+                                        onRatingUpdate: (rating) {},
+                                      ),
+                                      Text(
+                                        '(${destination.reviews.length} reviews)',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              color: AppColors.primary,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width /
+                                        1.25,
+                                    child: Text(
+                                      destination.name,
+                                      style: GoogleFonts.lato(
+                                        fontSize: 38,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
+                          ],
+                        ),
+                      ),
+                    ];
+                  },
+                  body: RefreshIndicator(
+                    onRefresh: () async {
+                      ref
+                          .read(destinationProvider(widget.destinationId)
+                              .notifier)
+                          .initialize();
+                    },
+                    child: SingleChildScrollView(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(25),
                           ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 10,
-                            ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: <Widget>[
-                                    Text(
-                                      "Ratings:",
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      width: 7,
-                                    ),
-                                    RatingBar.builder(
-                                      ignoreGestures: true,
-                                      initialRating: destination.avgReviews,
-                                      minRating: 0,
-                                      maxRating: 5,
-                                      direction: Axis.horizontal,
-                                      itemSize: 25,
-                                      allowHalfRating: true,
-                                      itemCount: 5,
-                                      itemPadding: EdgeInsets.symmetric(
-                                        horizontal: 0.0,
-                                      ),
-                                      itemBuilder: (context, _) => Icon(
-                                        Icons.star,
-                                        color: Colors.amber,
-                                      ),
-                                      onRatingUpdate: (rating) {},
-                                    ),
-                                    SizedBox(
-                                      width: 7,
-                                    ),
-                                    Text(
-                                      '(${destination.reviews.length} reviews)',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                            color: Colors.white,
-                                          ),
-                                    ),
-                                    SizedBox(
-                                      width: 7,
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      "Place :",
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      width: 7,
-                                    ),
-                                    Text(
-                                      destination.name,
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 15),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      "Country :",
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      width: 7,
-                                    ),
-                                    Text(
-                                      destination.country,
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 15),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      "Distance :",
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      width: 7,
-                                    ),
-                                    Text(
-                                      getDistance(
-                                        ref,
-                                        latitude: destination.latitude,
-                                        longitude: destination.longitude,
-                                      ),
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 15),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                          color: Colors.white,
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 30,
                           ),
-                        ])
-                      ],
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: <Widget>[
+                                  Text(
+                                    "Distance :",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 7,
+                                  ),
+                                  Text(
+                                    getDistance(
+                                      ref,
+                                      latitude: destination.latitude,
+                                      longitude: destination.longitude,
+                                    ),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Description(
+                                description: destination.description,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Visibility(
+                                visible: isVisible,
+                                child: Maps(
+                                  latitude: destination.latitude,
+                                  longitude: destination.longitude,
+                                  currentLocation: currentLocation,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Reviews(
+                                destId: destination.id,
+                                reviews: destination.reviews,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  Description(
-                    description: destination.description,
-                  ),
-                  Reviews(
-                    destId: destination.id,
-                    reviews: destination.reviews,
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );
@@ -262,52 +251,43 @@ class _DescriptionState extends ConsumerState<Description> {
   @override
   Widget build(BuildContext context) {
     final showMore = ref.watch(_showMoreProvider);
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Container(
-            color: Color.fromRGBO(95, 115, 150, 1),
-            height: 30,
-            width: double.infinity,
-            child: Center(
-              child: Text(
-                "Description",
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-            )),
+        Text(
+          "Description",
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         SizedBox(
           height: 1,
         ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-          color: Color.fromRGBO(55, 70, 105, 1),
-          child: new Column(
-            children: <Widget>[
-              Text(
-                widget.description,
-                maxLines: showMore ? 500 : 3,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              widget.description,
+              maxLines: showMore ? 500 : 3,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 15,
               ),
-              Center(
-                child: InkWell(
-                  child: Text(
-                    showMore ? "show less" : "show more",
-                    style: TextStyle(
-                        color: Colors.blue, fontWeight: FontWeight.bold),
-                  ),
-                  onTap: () {
-                    ref.read(_showMoreProvider.notifier).state = !showMore;
-                  },
-                ),
+            ),
+            InkWell(
+              child: Text(
+                showMore ? "show less" : "show more",
+                style:
+                    TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
               ),
-            ],
-          ),
+              onTap: () {
+                ref.read(_showMoreProvider.notifier).state = !showMore;
+              },
+            ),
+          ],
         ),
       ],
     );

@@ -197,7 +197,7 @@ class _ReviewFormState extends ConsumerState<ReviewForm> {
                                     : Text('Submit'),
                               )
                             : Text(
-                                'You need to login first to submit review 🤩',
+                                'You need to login first to submit review 😊',
                                 style: Theme.of(context).textTheme.bodyLarge,
                               ),
                       ],

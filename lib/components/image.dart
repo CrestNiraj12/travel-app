@@ -8,6 +8,9 @@ class CachedImage extends StatelessWidget {
     this.width = 300,
     this.radius = 25,
     this.isBottomRadius = true,
+    this.colorBlendMode = null,
+    this.color = null,
+    this.addUrlPrefix = true,
     required this.imageUrl,
   });
 
@@ -16,6 +19,9 @@ class CachedImage extends StatelessWidget {
   final String imageUrl;
   final double radius;
   final bool isBottomRadius;
+  final bool addUrlPrefix;
+  final Color? color;
+  final BlendMode? colorBlendMode;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +34,9 @@ class CachedImage extends StatelessWidget {
         height: height,
         width: width,
         fit: BoxFit.cover,
-        imageUrl: "${Config.imagePath}/$imageUrl",
+        imageUrl: "${addUrlPrefix ? '${Config.imagePath}/' : ''}$imageUrl",
+        color: color,
+        colorBlendMode: colorBlendMode,
         progressIndicatorBuilder: (context, url, downloadProgress) => Center(
           child: SizedBox(
             height: 50,
