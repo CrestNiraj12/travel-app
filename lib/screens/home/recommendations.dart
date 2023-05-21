@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:traveller/components/image.dart';
 import 'package:traveller/screens/destination/destination_screen.dart';
 import 'package:traveller/states/destination/recommendation.provider.dart';
+import 'package:traveller/utils/colors.dart';
 
 class Recommendations extends ConsumerWidget {
   const Recommendations({
@@ -89,7 +90,10 @@ class Recommendations extends ConsumerWidget {
                                   left: 20,
                                   bottom: 20,
                                   child: Container(
-                                    color: Colors.black.withOpacity(0.5),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.dark.withOpacity(0.5),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
                                     padding: EdgeInsets.all(10.0),
                                     child: Column(
                                       mainAxisAlignment:

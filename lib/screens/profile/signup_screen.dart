@@ -71,16 +71,17 @@ class _RegistrationState extends ConsumerState<Registration> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 50,
+                  padding: EdgeInsets.only(
+                    left: 30,
+                    right: 30,
+                    bottom: 50,
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(30.0),
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 30),
                       decoration: BoxDecoration(
-                        color: Colors.blue[200],
+                        color: AppColors.green,
                         boxShadow: const <BoxShadow>[
                           BoxShadow(
                             blurRadius: 50.0,
@@ -228,6 +229,9 @@ class _RegistrationState extends ConsumerState<Registration> {
                               children: <Widget>[
                                 Text("Already have an account?"),
                                 TextButton(
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: AppColors.primary,
+                                  ),
                                   child: Text(
                                     "Login",
                                     style: TextStyle(

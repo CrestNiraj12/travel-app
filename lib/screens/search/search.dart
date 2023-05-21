@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:traveller/components/image.dart';
 import 'package:traveller/models/destination.dart';
 import 'package:traveller/screens/destination/destination_screen.dart';
@@ -47,25 +48,22 @@ class _SearchState extends ConsumerState<Search>
     final destinations = ref.watch(destinationListProvider(query));
 
     return Scaffold(
-      body: Container(
-        color: AppColors.primary,
-        child: RefreshIndicator(
-          onRefresh: () async {
-            ref.read(searchQueryProvider.notifier).state = '';
-          },
-          child: SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
-            child: Column(
-              children: [
-                SearchForm(
-                  controller: searchController,
-                  handleSearch: _handleSearch,
-                  isSearched: isSearched,
-                  handleCancelSearch: _handleCancelSearch,
-                ),
-                DestinationItem(destinations: destinations),
-              ],
-            ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.read(searchQueryProvider.notifier).state = '';
+        },
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              SearchForm(
+                controller: searchController,
+                handleSearch: _handleSearch,
+                isSearched: isSearched,
+                handleCancelSearch: _handleCancelSearch,
+              ),
+              DestinationItem(destinations: destinations),
+            ],
           ),
         ),
       ),
@@ -136,93 +134,111 @@ class DestinationItem extends ConsumerWidget {
           ),
         ),
       ),
-      data: ListView(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
+      data: Padding(
+        padding: const EdgeInsets.only(
+          left: 20.0,
+          right: 15.0,
+          top: 15.0,
+          bottom: 100.0,
+        ),
+        child: Wrap(
           children: [
             for (final Destination destination in destinations.allData)
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => DestinationScreen(
-                        destinationId: destination.id,
+              Container(
+                constraints: BoxConstraints(
+                  maxWidth: 185,
+                ),
+                padding: EdgeInsets.only(
+                  right: 5,
+                  top: 5,
+                ),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => DestinationScreen(
+                          destinationId: destination.id,
+                        ),
                       ),
-                    ),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                  ),
+                    );
+                  },
                   child: Card(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(15),
                     ),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              CachedImage(
-                                imageUrl: destination.imageUrl,
-                              ),
-                              Container(width: 20),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Container(height: 5),
-                                    Text(
-                                      destination.name,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge,
-                                    ),
-                                    Container(height: 5),
-                                    Text(
-                                      getDistance(
-                                        ref,
-                                        latitude: destination.latitude,
-                                        longitude: destination.longitude,
-                                      ),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                            color: Colors.grey[700],
-                                          ),
-                                    ),
-                                    Container(height: 10),
-                                    Text(
-                                      destination.description,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium
-                                          ?.copyWith(
-                                            color: Colors.grey[700],
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                    child: SizedBox(
+                      height: 300,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          CachedImage(
+                            imageUrl: destination.imageUrl,
+                            height: 125,
+                            isBottomRadius: false,
+                            radius: 15,
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8.0,
+                              horizontal: 10.0,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                SizedBox(height: 5),
+                                Text(
+                                  destination.name,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  getDistance(
+                                    ref,
+                                    latitude: destination.latitude,
+                                    longitude: destination.longitude,
+                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                        color: Colors.grey[500],
+                                      ),
+                                ),
+                                SizedBox(height: 10),
+                                SizedBox(
+                                  height: 66,
+                                  child: Text(
+                                    destination.description,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.normal,
+                                          color: Colors.grey[700],
+                                        ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-          ]),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -243,41 +259,79 @@ class SearchForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(
-            left: 24,
-            right: 24,
-            top: 60,
+    return Container(
+      padding: EdgeInsets.only(
+        left: 24,
+        right: 24,
+        top: 60,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            "Discover the world's ",
+            style: GoogleFonts.lato(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          child: TextField(
+          Text(
+            "hidden gems...",
+            style: GoogleFonts.lato(
+              fontSize: 30,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          SizedBox(
+            height: 25,
+          ),
+          TextField(
             controller: controller,
             textInputAction: TextInputAction.search,
             onSubmitted: (value) => handleSearch(),
             decoration: InputDecoration(
               isDense: true,
-              border: OutlineInputBorder(),
+              filled: true,
+              fillColor: AppColors.primary.withOpacity(0.7),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  width: 1,
+                  color: AppColors.primary,
+                ),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  width: 1,
+                  color: AppColors.primary,
+                ),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  width: 1,
+                  color: AppColors.primary,
+                ),
+                borderRadius: BorderRadius.circular(15),
+              ),
               hintText: 'Search',
-              hintStyle: Theme.of(context).textTheme.bodyMedium,
-              suffixIcon: Wrap(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: handleSearch,
+              hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey,
                   ),
-                  if (isSearched)
-                    IconButton(
+              prefixIcon: Icon(
+                Icons.search,
+                color: AppColors.blue,
+              ),
+              suffixIcon: isSearched
+                  ? IconButton(
                       icon: Icon(Icons.close),
                       onPressed: handleCancelSearch,
-                    ),
-                ],
-              ),
+                    )
+                  : SizedBox.shrink(),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

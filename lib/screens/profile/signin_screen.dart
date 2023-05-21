@@ -56,7 +56,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         color: AppColors.primary,
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(top: 50.0),
+            padding: const EdgeInsets.only(top: 100.0),
             child: Column(
               children: <Widget>[
                 Center(
@@ -67,16 +67,17 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 50,
+                  padding: EdgeInsets.only(
+                    left: 30,
+                    right: 30,
+                    bottom: 50,
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(30.0),
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 30),
                       decoration: BoxDecoration(
-                        color: Colors.blue[200],
+                        color: AppColors.green,
                         boxShadow: const <BoxShadow>[
                           BoxShadow(
                             blurRadius: 50.0,
@@ -138,7 +139,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                                         .textTheme
                                         .bodySmall
                                         ?.copyWith(
-                                          color: Colors.blueAccent,
+                                          color: AppColors.primary,
                                         ),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
@@ -192,42 +193,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                                 }
                               },
                             ),
-                            // SizedBox(
-                            //   height: 30,
-                            // ),
-                            // Center(
-                            //   child: SizedBox(
-                            //     child: TextButton(
-                            //       style: TextButton.styleFrom(
-                            //         elevation: 5,
-                            //         shape: RoundedRectangleBorder(
-                            //           borderRadius: BorderRadius.all(
-                            //             Radius.circular(30),
-                            //           ),
-                            //         ),
-                            //         backgroundColor: Colors.black45,
-                            //       ),
-                            //       child: Row(
-                            //         mainAxisAlignment: MainAxisAlignment.center,
-                            //         children: <Widget>[
-                            //           Image.asset(
-                            //             "images/google.webp",
-                            //             height: 35,
-                            //             width: 50,
-                            //           ),
-                            //           Text(
-                            //             "Google",
-                            //             style: TextStyle(
-                            //               color: Colors.white,
-                            //               fontSize: 14,
-                            //             ),
-                            //           ),
-                            //         ],
-                            //       ),
-                            //       onPressed: () async {},
-                            //     ),
-                            //   ),
-                            // ),
                             SizedBox(
                               height: 15,
                             ),
@@ -236,6 +201,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                               children: <Widget>[
                                 Text("Don\'t have account?"),
                                 TextButton(
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: AppColors.primary,
+                                  ),
                                   child: Text(
                                     "Register",
                                     style: TextStyle(

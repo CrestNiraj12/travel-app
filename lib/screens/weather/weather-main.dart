@@ -54,7 +54,7 @@ class _WeatherState extends State<Weather>
     super.build(context);
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blueAccent,
+          backgroundColor: AppColors.blue,
           elevation: 0,
           title: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -74,7 +74,7 @@ class _WeatherState extends State<Weather>
                   child: IconButton(
                     icon: Icon(
                       Icons.my_location,
-                      size: 40,
+                      size: 25,
                       color: Colors.white,
                     ),
                     onPressed: (weatherState is WeatherLoading ||
@@ -106,7 +106,7 @@ class _WeatherState extends State<Weather>
                           weatherState is WeatherEmpty) {
                         return Center(
                           child: CircularProgressIndicator(
-                            backgroundColor: Colors.red,
+                            backgroundColor: AppColors.blue,
                           ),
                         );
                       } else if (weatherState is WeatherLoaded) {
@@ -135,7 +135,7 @@ class _WeatherState extends State<Weather>
                             ),
                             Text(
                               errorText,
-                              style: TextStyle(color: Colors.red),
+                              style: TextStyle(color: Colors.redAccent),
                             ),
                             SizedBox(
                               height: 10,
@@ -146,16 +146,19 @@ class _WeatherState extends State<Weather>
                                   borderRadius: BorderRadius.circular(18.0),
                                 ),
                                 side: BorderSide(
-                                  color: Colors.blue,
+                                  color: AppColors.blue,
                                 ),
                               ),
                               child: Text(
                                 "Try Again",
-                                style: TextStyle(color: Colors.blue),
+                                style: TextStyle(color: AppColors.blue),
                               ),
                               onPressed: _fetchWeatherWithCity,
                             ),
                             FilledButton(
+                              style: FilledButton.styleFrom(
+                                backgroundColor: AppColors.blue,
+                              ),
                               child: Text(
                                 "Reset",
                                 style: TextStyle(color: Colors.white),

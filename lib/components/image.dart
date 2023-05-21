@@ -4,9 +4,10 @@ import 'package:traveller/config.dart';
 
 class CachedImage extends StatelessWidget {
   const CachedImage({
-    this.height = 100,
-    this.width = 100,
+    this.height = 300,
+    this.width = 300,
     this.radius = 25,
+    this.isBottomRadius = true,
     required this.imageUrl,
   });
 
@@ -14,14 +15,18 @@ class CachedImage extends StatelessWidget {
   final double width;
   final String imageUrl;
   final double radius;
+  final bool isBottomRadius;
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(radius),
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(radius),
+        bottom: isBottomRadius ? Radius.circular(radius) : Radius.zero,
+      ),
       child: CachedNetworkImage(
-        height: 300,
-        width: 300,
+        height: height,
+        width: width,
         fit: BoxFit.cover,
         imageUrl: "${Config.imagePath}/$imageUrl",
         progressIndicatorBuilder: (context, url, downloadProgress) => Center(
