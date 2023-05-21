@@ -7,6 +7,7 @@ import 'package:traveller/models/user.dart';
 import 'package:traveller/screens/destination/destination_screen.dart';
 import 'package:traveller/states/auth/auth.provider.dart';
 import 'package:traveller/states/history/history.provider.dart';
+import 'package:traveller/utils/colors.dart';
 import 'package:traveller/utils/distance.dart';
 
 class ProfileHome extends ConsumerStatefulWidget {
@@ -29,95 +30,96 @@ class _ProfileHomeState extends ConsumerState<ProfileHome> {
     final _loading = ref.watch(_loadingProvider);
     final destinations = ref.watch(historyProvider);
 
-    return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () async {
-          ref.read(historyProvider.notifier).initialize();
-        },
-        child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                height: 325.0,
-                width: double.infinity,
-                color: Colors.lightBlue,
-                padding: EdgeInsets.only(top: 50),
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(height: 20.0),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(width: 15.0),
-                        CircleAvatar(
-                          radius: 60.0,
-                          backgroundColor: Colors.grey,
-                          backgroundImage: NetworkImage(widget.user.avatar),
-                        ),
-                        SizedBox(
-                          height: 15.0,
-                        ),
-                        Text(
-                          widget.user.name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 26.0,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Text(
-                          widget.user.email,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.0,
-                            color: Colors.grey[800],
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 13.0,
-                    ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.black,
-                        backgroundColor: Colors.white,
-                        minimumSize: Size(50, 30),
-                        padding: EdgeInsets.zero,
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.read(historyProvider.notifier).initialize();
+      },
+      child: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              height: 325.0,
+              width: double.infinity,
+              color: Colors.lightBlue,
+              padding: EdgeInsets.only(top: 50),
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 20.0),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(width: 15.0),
+                      CircleAvatar(
+                        radius: 60.0,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: NetworkImage(widget.user.avatar),
                       ),
-                      onPressed: () async {
-                        if (_loading) return;
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Text(
+                        widget.user.name,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 26.0,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Text(
+                        widget.user.email,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                          color: Colors.grey[800],
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 13.0,
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: Colors.white,
+                      minimumSize: Size(50, 30),
+                      padding: EdgeInsets.zero,
+                    ),
+                    onPressed: () async {
+                      if (_loading) return;
 
-                        ref.read(_loadingProvider.notifier).state = true;
-                        await ref.read(authProvider.notifier).logoutUser();
-                        ref.read(_loadingProvider.notifier).state = false;
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: _loading
-                            ? Loader()
-                            : Text(
-                                "Logout",
-                                style: TextStyle(
-                                  fontSize: 10.0,
-                                ),
-                              ),
+                      ref.read(_loadingProvider.notifier).state = true;
+                      await ref.read(authProvider.notifier).logoutUser();
+                      ref.read(_loadingProvider.notifier).state = false;
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
+                      child: _loading
+                          ? Loader()
+                          : Text(
+                              "Logout",
+                              style: TextStyle(
+                                fontSize: 10.0,
+                              ),
+                            ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              color: AppColors.primary,
+              child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
                 ),
@@ -221,8 +223,8 @@ class _ProfileHomeState extends ConsumerState<ProfileHome> {
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

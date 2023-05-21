@@ -10,6 +10,7 @@ import 'package:traveller/screens/weather/bloc/weather_event.dart';
 import 'package:traveller/screens/weather/bloc/weather_state.dart';
 import 'package:traveller/screens/weather/repository/weather_repository.dart';
 import 'package:traveller/screens/weather/widgets/weather_widget.dart';
+import 'package:traveller/utils/colors.dart';
 
 class Weather extends StatefulWidget {
   final WeatherRepository weatherRepository = WeatherRepository(
@@ -86,11 +87,13 @@ class _WeatherState extends State<Weather>
             )
           ],
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.primary,
         body: Material(
           child: Container(
               constraints: BoxConstraints.expand(),
-              decoration: BoxDecoration(color: Colors.white),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+              ),
               child: ListView(
                 children: <Widget>[
                   SizedBox(

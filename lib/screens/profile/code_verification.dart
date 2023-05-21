@@ -8,6 +8,7 @@ import 'package:traveller/components/snackbar.dart';
 import 'package:traveller/constants/constant.dart';
 import 'package:traveller/screens/profile/reset_password.dart';
 import 'package:traveller/services/auth_service.dart';
+import 'package:traveller/utils/colors.dart';
 
 class CodeVerification extends ConsumerStatefulWidget {
   CodeVerification({Key? key, required this.email}) : super(key: key);
@@ -132,6 +133,7 @@ class _CodeVerificationState extends ConsumerState<CodeVerification> {
     return Scaffold(
       body: Center(
           child: Container(
+        color: AppColors.primary,
         child: Padding(
             padding: EdgeInsets.all(25.0),
             child: Column(
@@ -144,7 +146,7 @@ class _CodeVerificationState extends ConsumerState<CodeVerification> {
                   child: Image.asset('images/logo.png'),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  padding: const EdgeInsets.only(bottom: 8.0),
                   child: Text(
                     'Email verification',
                     style: TextStyle(

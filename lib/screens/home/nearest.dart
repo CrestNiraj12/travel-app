@@ -1,10 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:traveller/components/image.dart';
 import 'package:traveller/screens/destination/destination_screen.dart';
 import 'package:traveller/states/destination/destination_list.provider.dart';
+import 'package:traveller/utils/distance.dart';
 
 class NearestPlaces extends ConsumerWidget {
   const NearestPlaces({
@@ -42,14 +44,12 @@ class NearestPlaces extends ConsumerWidget {
             ),
           ),
           data: Container(
-            decoration: BoxDecoration(
-                boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 50)]),
             margin: EdgeInsets.only(top: 10, bottom: 10),
             padding: EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 5),
-            height: 270,
-            width: double.infinity,
             child: ListView.builder(
-              scrollDirection: Axis.horizontal,
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
               itemCount: min(destinations.allData.length, 10),
               itemBuilder: (BuildContext context, int i) {
                 final destination = destinations.allData[i];
@@ -64,20 +64,95 @@ class NearestPlaces extends ConsumerWidget {
                     );
                   },
                   child: Card(
-                    elevation: 1,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      width: 340.0,
-                      child: Stack(
+                    elevation: 0.5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
                         children: <Widget>[
-                          Positioned.fill(
+                          SizedBox(
+                            height: 80,
+                            width: 80,
                             child: CachedImage(
                               imageUrl: destination.imageUrl,
                               width: double.infinity,
+                              radius: 15,
                             ),
                           ),
+                          SizedBox(
+                            width: 25,
+                          ),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${destination.name}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 6,
+                                ),
+                                Text(
+                                  getDistance(
+                                    ref,
+                                    latitude: destination.latitude,
+                                    longitude: destination.longitude,
+                                  ),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 6,
+                                ),
+                                Wrap(
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  children: [
+                                    RatingBar.builder(
+                                      ignoreGestures: true,
+                                      initialRating: destination.avgReviews,
+                                      minRating: 0,
+                                      maxRating: 5,
+                                      direction: Axis.horizontal,
+                                      itemSize: 20,
+                                      allowHalfRating: true,
+                                      unratedColor: Colors.grey,
+                                      itemCount: 5,
+                                      itemPadding: EdgeInsets.symmetric(
+                                        horizontal: 0.0,
+                                      ),
+                                      itemBuilder: (context, _) => Icon(
+                                        Icons.star,
+                                        color: Colors.amber,
+                                      ),
+                                      onRatingUpdate: (rating) {},
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      '(${destination.reviews.length})',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
                     ),

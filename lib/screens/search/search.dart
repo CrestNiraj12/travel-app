@@ -6,6 +6,7 @@ import 'package:traveller/screens/destination/destination_screen.dart';
 import 'package:traveller/states/current_location/current_location.provider.dart';
 import 'package:traveller/states/destination/destination_list.provider.dart';
 import 'package:traveller/states/list_query/list_loading.state.dart';
+import 'package:traveller/utils/colors.dart';
 import 'package:traveller/utils/distance.dart';
 
 class Search extends ConsumerStatefulWidget {
@@ -46,22 +47,25 @@ class _SearchState extends ConsumerState<Search>
     final destinations = ref.watch(destinationListProvider(query));
 
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () async {
-          ref.read(searchQueryProvider.notifier).state = '';
-        },
-        child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          child: Column(
-            children: [
-              SearchForm(
-                controller: searchController,
-                handleSearch: _handleSearch,
-                isSearched: isSearched,
-                handleCancelSearch: _handleCancelSearch,
-              ),
-              DestinationItem(destinations: destinations),
-            ],
+      body: Container(
+        color: AppColors.primary,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            ref.read(searchQueryProvider.notifier).state = '';
+          },
+          child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                SearchForm(
+                  controller: searchController,
+                  handleSearch: _handleSearch,
+                  isSearched: isSearched,
+                  handleCancelSearch: _handleCancelSearch,
+                ),
+                DestinationItem(destinations: destinations),
+              ],
+            ),
           ),
         ),
       ),

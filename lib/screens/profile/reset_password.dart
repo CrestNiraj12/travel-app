@@ -5,6 +5,7 @@ import 'package:traveller/components/snackbar.dart';
 import 'package:traveller/constants/constant.dart';
 import 'package:traveller/services/auth_service.dart';
 import 'package:traveller/traveller-main-page.dart';
+import 'package:traveller/utils/colors.dart';
 
 class ResetPasswordForm extends ConsumerStatefulWidget {
   ResetPasswordForm({
@@ -135,8 +136,9 @@ class _ResetPasswordFormState extends ConsumerState<ResetPasswordForm> {
             inputFieldDecorate("Confirm Password", Icons.confirmation_num));
 
     return Scaffold(
-      body: Center(
-        child: Container(
+      body: Container(
+        color: AppColors.primary,
+        child: Center(
           child: Padding(
             padding: const EdgeInsets.all(25.0),
             child: SingleChildScrollView(

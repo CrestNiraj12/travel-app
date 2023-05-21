@@ -6,43 +6,48 @@ class CachedImage extends StatelessWidget {
   const CachedImage({
     this.height = 100,
     this.width = 100,
+    this.radius = 25,
     required this.imageUrl,
   });
 
   final double height;
   final double width;
   final String imageUrl;
+  final double radius;
 
   @override
   Widget build(BuildContext context) {
-    return CachedNetworkImage(
-      height: 100,
-      width: 100,
-      fit: BoxFit.cover,
-      imageUrl: "${Config.imagePath}/$imageUrl",
-      progressIndicatorBuilder: (context, url, downloadProgress) => Center(
-        child: SizedBox(
-          height: 50,
-          width: 50,
-          child: CircularProgressIndicator(
-            value: downloadProgress.progress,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(radius),
+      child: CachedNetworkImage(
+        height: 300,
+        width: 300,
+        fit: BoxFit.cover,
+        imageUrl: "${Config.imagePath}/$imageUrl",
+        progressIndicatorBuilder: (context, url, downloadProgress) => Center(
+          child: SizedBox(
+            height: 50,
+            width: 50,
+            child: CircularProgressIndicator(
+              value: downloadProgress.progress,
+            ),
           ),
         ),
-      ),
-      errorWidget: (context, url, error) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error,
-            color: Colors.red,
-          ),
-          Text(
-            'Error loading image',
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.center,
-          )
-        ],
+        errorWidget: (context, url, error) => Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error,
+              color: Colors.red,
+            ),
+            Text(
+              'Error loading image',
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            )
+          ],
+        ),
       ),
     );
   }

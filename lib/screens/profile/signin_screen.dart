@@ -6,6 +6,7 @@ import 'package:traveller/components/loader.dart';
 import 'package:traveller/constants/constant.dart';
 import 'package:traveller/screens/profile/forgot_password.dart';
 import 'package:traveller/states/auth/auth.provider.dart';
+import 'package:traveller/utils/colors.dart';
 
 final passwordValidator = MultiValidator([
   RequiredValidator(errorText: 'password is required'),
@@ -52,7 +53,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     return SafeArea(
       child: Container(
         height: MediaQuery.of(context).size.height,
-        color: Color(0xFFd6eaed),
+        color: AppColors.primary,
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.only(top: 50.0),

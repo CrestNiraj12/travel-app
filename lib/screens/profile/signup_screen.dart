@@ -4,6 +4,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:traveller/components/loader.dart';
 import 'package:traveller/constants/constant.dart';
 import 'package:traveller/states/auth/auth.provider.dart';
+import 'package:traveller/utils/colors.dart';
 
 final passwordValidator = MultiValidator([
   RequiredValidator(errorText: 'Password is required'),
@@ -55,7 +56,7 @@ class _RegistrationState extends ConsumerState<Registration> {
 
     return SafeArea(
       child: Container(
-        color: Color(0xFFd6eaed),
+        color: AppColors.primary,
         height: MediaQuery.of(context).size.height,
         child: SingleChildScrollView(
           child: Padding(
