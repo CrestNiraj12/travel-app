@@ -29,7 +29,18 @@ class NearestPlaces extends ConsumerWidget {
           ),
         ),
         destinations.mapStatesToWidget(
-          loading: SizedBox.shrink(),
+          loading: Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 50),
+              child: SizedBox(
+                height: 30,
+                width: 30,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                ),
+              ),
+            ),
+          ),
           data: Container(
             decoration: BoxDecoration(
                 boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 50)]),
